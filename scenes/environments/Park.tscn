@@ -1,0 +1,81 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/environments/Tree.tscn" id="1_tree"]
+
+[sub_resource type="BoxMesh" id="Cube"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BenchShape"]
+size = Vector3(2.7, 0.65, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="Grass"]
+albedo_color = Color(0.42, 0.71, 0.44, 1)
+
+[sub_resource type="StandardMaterial3D" id="Path"]
+albedo_color = Color(0.86, 0.76, 0.58, 1)
+
+[sub_resource type="StandardMaterial3D" id="Bench"]
+albedo_color = Color(0.54, 0.36, 0.24, 1)
+
+[sub_resource type="StandardMaterial3D" id="Flower"]
+albedo_color = Color(0.9, 0.48, 0.48, 1)
+
+[node name="Park" type="Node3D"]
+
+[node name="Lawn" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.025, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Grass")
+scale = Vector3(23, 0.04, 21)
+
+[node name="MainPath" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.055, -1)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Path")
+scale = Vector3(2.2, 0.05, 19)
+
+[node name="CrossPath" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.06, 1.5)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Path")
+scale = Vector3(18, 0.05, 2.2)
+
+[node name="TreeWest" parent="." instance=ExtResource("1_tree")]
+position = Vector3(-7.5, 0, -5.5)
+
+[node name="TreeEast" parent="." instance=ExtResource("1_tree")]
+position = Vector3(7.5, 0, 5.5)
+
+[node name="TreeNorth" parent="." instance=ExtResource("1_tree")]
+position = Vector3(6.2, 0, -6.5)
+
+[node name="Bench" type="StaticBody3D" parent="."]
+position = Vector3(-5.6, 0, 2.9)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bench"]
+position = Vector3(0, 0.7, 0)
+shape = SubResource("BenchShape")
+
+[node name="Seat" type="MeshInstance3D" parent="Bench"]
+position = Vector3(0, 0.7, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Bench")
+scale = Vector3(2.7, 0.65, 0.8)
+
+[node name="Backrest" type="MeshInstance3D" parent="Bench"]
+position = Vector3(0, 1.35, 0.3)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Bench")
+scale = Vector3(2.7, 0.75, 0.25)
+
+[node name="FlowerBed" type="MeshInstance3D" parent="."]
+position = Vector3(-7.2, 0.06, -1.2)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Flower")
+scale = Vector3(3.5, 0.12, 2.4)
+
+[node name="Entrance" type="Marker3D" parent="."]
+position = Vector3(0, 0.05, -9.5)
+
+[node name="FutureDogWalk" type="Marker3D" parent="."]
+position = Vector3(0, 0.05, 1.5)

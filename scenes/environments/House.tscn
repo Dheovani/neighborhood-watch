@@ -1,0 +1,105 @@
+[gd_scene load_steps=10 format=3]
+
+[sub_resource type="BoxShape3D" id="BodyShape"]
+size = Vector3(10, 4, 8)
+
+[sub_resource type="BoxMesh" id="Cube"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="Walls"]
+albedo_color = Color(0.88, 0.76, 0.58, 1)
+
+[sub_resource type="StandardMaterial3D" id="Roof"]
+albedo_color = Color(0.27, 0.39, 0.53, 1)
+
+[sub_resource type="StandardMaterial3D" id="Trim"]
+albedo_color = Color(0.96, 0.94, 0.81, 1)
+
+[sub_resource type="StandardMaterial3D" id="Door"]
+albedo_color = Color(0.45, 0.29, 0.22, 1)
+
+[sub_resource type="StandardMaterial3D" id="Glass"]
+albedo_color = Color(0.37, 0.68, 0.79, 1)
+
+[sub_resource type="StandardMaterial3D" id="Garden"]
+albedo_color = Color(0.32, 0.62, 0.34, 1)
+
+[sub_resource type="StandardMaterial3D" id="Path"]
+albedo_color = Color(0.79, 0.76, 0.67, 1)
+
+[node name="House" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 2, 0)
+shape = SubResource("BodyShape")
+
+[node name="Walls" type="MeshInstance3D" parent="."]
+position = Vector3(0, 2, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walls")
+scale = Vector3(10, 4, 8)
+
+[node name="RoofLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-2.55, 4.65, 0)
+rotation_degrees = Vector3(0, 0, 24)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Roof")
+scale = Vector3(5.9, 0.3, 9)
+
+[node name="RoofRight" type="MeshInstance3D" parent="."]
+position = Vector3(2.55, 4.65, 0)
+rotation_degrees = Vector3(0, 0, -24)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Roof")
+scale = Vector3(5.9, 0.3, 9)
+
+[node name="FrontDoor" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.1, 4.06)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Door")
+scale = Vector3(1.4, 2.2, 0.12)
+
+[node name="LeftWindow" type="MeshInstance3D" parent="."]
+position = Vector3(-3.2, 2.45, 4.07)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Glass")
+scale = Vector3(1.8, 1.4, 0.1)
+
+[node name="RightWindow" type="MeshInstance3D" parent="."]
+position = Vector3(3.2, 2.45, 4.07)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Glass")
+scale = Vector3(1.8, 1.4, 0.1)
+
+[node name="WindowTrimLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-3.2, 1.7, 4.15)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Trim")
+scale = Vector3(2.1, 0.14, 0.2)
+
+[node name="WindowTrimRight" type="MeshInstance3D" parent="."]
+position = Vector3(3.2, 1.7, 4.15)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Trim")
+scale = Vector3(2.1, 0.14, 0.2)
+
+[node name="Walkway" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.035, 5.9)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Path")
+scale = Vector3(1.8, 0.06, 3.8)
+
+[node name="GardenLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-3.15, 0.05, 5.35)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Garden")
+scale = Vector3(2.7, 0.1, 1.3)
+
+[node name="GardenRight" type="MeshInstance3D" parent="."]
+position = Vector3(3.15, 0.05, 5.35)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Garden")
+scale = Vector3(2.7, 0.1, 1.3)
+
+[node name="Entrance" type="Marker3D" parent="."]
+position = Vector3(0, 0.05, 7.4)

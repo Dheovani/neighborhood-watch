@@ -1,0 +1,92 @@
+[gd_scene load_steps=9 format=3]
+
+[sub_resource type="BoxShape3D" id="BuildingShape"]
+size = Vector3(16, 5, 9)
+
+[sub_resource type="BoxMesh" id="Cube"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="Walls"]
+albedo_color = Color(0.94, 0.83, 0.66, 1)
+
+[sub_resource type="StandardMaterial3D" id="Roof"]
+albedo_color = Color(0.69, 0.27, 0.29, 1)
+
+[sub_resource type="StandardMaterial3D" id="Glass"]
+albedo_color = Color(0.36, 0.69, 0.78, 1)
+
+[sub_resource type="StandardMaterial3D" id="Awning"]
+albedo_color = Color(0.91, 0.35, 0.31, 1)
+
+[sub_resource type="StandardMaterial3D" id="Sign"]
+albedo_color = Color(0.99, 0.96, 0.76, 1)
+
+[sub_resource type="StandardMaterial3D" id="Path"]
+albedo_color = Color(0.79, 0.76, 0.67, 1)
+
+[node name="Market" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 2.5, 0)
+shape = SubResource("BuildingShape")
+
+[node name="Walls" type="MeshInstance3D" parent="."]
+position = Vector3(0, 2.5, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walls")
+scale = Vector3(16, 5, 9)
+
+[node name="Roof" type="MeshInstance3D" parent="."]
+position = Vector3(0, 5.15, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Roof")
+scale = Vector3(17, 0.35, 10)
+
+[node name="StorefrontLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-4.1, 2.1, 4.56)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Glass")
+scale = Vector3(4.2, 2.7, 0.12)
+
+[node name="StorefrontRight" type="MeshInstance3D" parent="."]
+position = Vector3(4.1, 2.1, 4.56)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Glass")
+scale = Vector3(4.2, 2.7, 0.12)
+
+[node name="Door" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.45, 4.57)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Glass")
+scale = Vector3(2.1, 2.9, 0.13)
+
+[node name="Awning" type="MeshInstance3D" parent="."]
+position = Vector3(0, 4.25, 5.3)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Awning")
+scale = Vector3(15, 0.3, 2.5)
+
+[node name="SignPanel" type="MeshInstance3D" parent="."]
+position = Vector3(0, 6, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Sign")
+scale = Vector3(9, 1.2, 0.2)
+
+[node name="SignText" type="Label3D" parent="."]
+position = Vector3(0, 6, 0.13)
+pixel_size = 0.005
+text = "MARKET"
+font_size = 96
+modulate = Color(0.28, 0.33, 0.4, 1)
+
+[node name="FrontWalk" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.035, 6.1)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Path")
+scale = Vector3(14, 0.06, 3.0)
+
+[node name="Entrance" type="Marker3D" parent="."]
+position = Vector3(0, 0.05, 6.1)
+
+[node name="FutureCheckout" type="Marker3D" parent="."]
+position = Vector3(0, 0.05, 5)
