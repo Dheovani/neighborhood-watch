@@ -64,6 +64,9 @@ if ($LASTEXITCODE -ne 0) { throw 'dotnet restore failed.' }
 dotnet build (Join-Path $projectRoot 'NeighborhoodWatch.csproj') --no-restore
 if ($LASTEXITCODE -ne 0) { throw 'dotnet build failed.' }
 
+dotnet run --project (Join-Path $projectRoot 'tests\NeighborhoodWatch.DomainChecks.csproj') --configuration Release
+if ($LASTEXITCODE -ne 0) { throw 'Mission domain checks failed.' }
+
 & $GodotPath --headless --path $projectRoot --editor --import --quit
 if ($LASTEXITCODE -ne 0) { throw 'Godot import failed.' }
 
@@ -76,7 +79,10 @@ if ($LASTEXITCODE -ne 0) { throw 'Movement smoke test failed.' }
 & $GodotPath --headless --path $projectRoot --script 'res://tests/neighborhood_smoke.gd'
 if ($LASTEXITCODE -ne 0) { throw 'Neighborhood smoke test failed.' }
 
-Write-Host 'Validation passed: build, import, scene launch, movement smoke, and neighborhood smoke.'
+& $GodotPath --headless --path $projectRoot --script 'res://tests/mission_smoke.gd'
+if ($LASTEXITCODE -ne 0) { throw 'Mission smoke test failed.' }
+
+Write-Host 'Validation passed: build, domain checks, import, scene launch, movement, neighborhood, and mission smoke.'
 
 if ($Play) {
     & $GodotPath --path $projectRoot

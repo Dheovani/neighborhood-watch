@@ -52,6 +52,6 @@ Surveillance equipment can improve observation, while stealth equipment can make
 - Equipment catalog, costs, counterplay, and whether offense points belong in Score Attack.
 - Final player count and map size after playtesting.
 
-## Implemented through M02
+## Implemented through the M03 prototype
 
-A capsule player can move and jump through a primitive neighborhood with a mouse-controlled follow camera. The prototype has five houses, a market, a gas station, a park, road and sidewalks, simple props, and exterior location markers. Buildings are closed shells. No mission interactions, gameplay loop, multiplayer, or scoring are implemented. The block layout is recorded in `docs/design/M02_BLOCK_PLAN.md`.
+A capsule player can move and jump through a primitive neighborhood with a mouse-controlled follow camera. The prototype has five houses, a market, a gas station, a park, road and sidewalks, simple props, and exterior mission spots. Buildings are closed shells. Three proposed sample missions can be completed by pressing E at the corresponding exterior spot: litter in the park, read a neighbor's mail, and take an unpaid snack from a market display. Each action completes one mission, grants its configured prototype points, and records one local infraction event. Declining or ignoring it grants nothing. These samples await player content review; their points are not finalized mode scoring. There is no contextual shopping, dog walking, bathroom interaction, multiplayer, evidence, reporting, or match loop. The block layout is recorded in `docs/design/M02_BLOCK_PLAN.md`.

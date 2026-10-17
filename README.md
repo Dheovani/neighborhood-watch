@@ -1,6 +1,8 @@
 # Neighborhood Watch
 
-Neighborhood Watch is a planned 3D multiplayer social stealth game set in an ordinary U.S. neighborhood with houses and gardens, some shops, a gas station, and a park. The setting does not associate income level with wrongdoing. Players complete missions through minor reportable infractions, ranging from petty crimes to rude behavior, while watching and reporting neighbors who do the same. A player may refuse a mission's infraction, but then does not complete that mission or receive its points. The intended tone is silly and friendly, without grave crime or severe violence. **M02 currently implements a single player neighborhood prototype.** Gameplay rules and networking are documented proposals, not implemented features.
+Neighborhood Watch is a planned 3D multiplayer social stealth game set in an ordinary U.S. neighborhood with houses and gardens, some shops, a gas station, and a park. The setting does not associate income level with wrongdoing. Players complete missions through minor reportable infractions, ranging from petty crimes to rude behavior, while watching and reporting neighbors who do the same. A player may refuse a mission's infraction, but then does not complete that mission or receive its points. The intended tone is silly and friendly, without grave crime or severe violence. **M03 currently implements a single player mission prototype.** Networking, reporting, and match rules remain proposals.
+
+**M03 prototype is in progress:** three local exterior infraction missions now work. They are sample content pending player review. Multiplayer, reporting, and match flow are not implemented.
 
 ## Requirements
 
@@ -20,13 +22,13 @@ From PowerShell in the project root:
 .\scripts\dev\validate.ps1 -Play
 ```
 
-The first command validates; the second repeats validation and opens the game for a visual playtest. An explicit `-GodotPath` takes priority; otherwise the script checks `tools/godot/`, `GODOT_EXE`, its temporary cache, PATH, and the named Downloads ZIP. It restores packages from Godot's bundled NuGet feed when available, builds C#, imports scenes, runs the main scene headlessly for 20 frames, and checks movement, camera rotation, neighborhood landmarks, routes, and collisions. To build only, run `dotnet build NeighborhoodWatch.csproj`. On first restore without the bundled packages, NuGet network access may be needed.
+The first command validates; the second repeats validation and opens the game for a visual playtest. An explicit `-GodotPath` takes priority; otherwise the script checks `tools/godot/`, `GODOT_EXE`, its temporary cache, PATH, and the named Downloads ZIP. It restores packages from Godot's bundled NuGet feed when available, builds C#, runs dependency-free .NET mission rule checks, imports scenes, launches the main scene headlessly for 20 frames, and checks movement, neighborhood routes, and mission interactions. To build only, run `dotnet build NeighborhoodWatch.csproj`. On first restore without the bundled packages, NuGet network access may be needed.
 
 Open this folder in VS Code. Edit C# and text scene files there; Godot's editor is only needed to inspect scene composition or test the controls visually.
 
 ## GitHub automation
 
-Pull requests targeting `master` run two workflows. **CI** verifies C# formatting, builds with warnings as errors, then imports and launches the project in headless Godot 4.7.2 .NET and runs movement and neighborhood smoke tests. **Security** audits NuGet dependencies for known vulnerabilities of moderate severity or higher. Public repositories also run C# CodeQL; GitHub requires an eligible Code Security plan for private repositories, so that job is skipped there. The Godot download is pinned to the official 4.7.2 release and checked against its SHA-256 digest.
+Pull requests targeting `master` run two workflows. **CI** verifies C# formatting, builds with warnings as errors, runs mission rule checks, then imports and launches the project in headless Godot 4.7.2 .NET and runs movement, neighborhood, and mission smoke tests. **Security** audits the game and domain-check projects for known NuGet vulnerabilities of moderate severity or higher. Public repositories also run C# CodeQL; GitHub requires an eligible Code Security plan for private repositories, so that job is skipped there. The Godot download is pinned to the official 4.7.2 release and checked against its SHA-256 digest.
 
 Dependabot checks GitHub Actions and NuGet weekly. `Godot.NET.Sdk` updates are excluded because the SDK and installed Godot editor must be upgraded together and validated locally. GitHub issue forms and the pull request template live in `.github/`. Recommended branch protection checks are **Code quality**, **Game smoke**, and **NuGet audit**; do not require **CodeQL C#** while the repository is private. CI on GitHub starts only after this branch is committed and pushed. The local Windows equivalent remains `./scripts/dev/validate.ps1`.
 
@@ -39,8 +41,9 @@ Dependabot checks GitHub Actions and NuGet weekly. `Godot.NET.Sdk` updates are e
 | Space | Jump |
 | Escape | Release or capture mouse |
 | Left click | Recapture mouse |
+| E | Commit the prompted infraction at a mission location |
 
-The scene has a capsule player, ground collision, lighting, a following camera, and a placeholder neighborhood with five houses, a market, a gas station, and a park. There is no objective or match flow yet. Building interiors are closed.
+The scene has a capsule player, ground collision, lighting, a following camera, and a placeholder neighborhood with five houses, a market, a gas station, and a park. Prototype missions let the player litter in the park, read a neighbor's mail, or take an unpaid snack from a market display. Walking away completes nothing. Each successful action records one local infraction event and awards the mission's points once. Building interiors are closed.
 
 ## Project map
 
@@ -49,7 +52,11 @@ The scene has a capsule player, ground collision, lighting, a following camera, 
 - `scenes/environments/`: reusable building, park, car, and tree scenes.
 - `scenes/characters/Player.tscn`: player body, collision, and camera hierarchy.
 - `scripts/characters/PlayerController.cs`: local prototype movement and camera input.
-- `scripts/dev/validate.ps1`: repeatable M01 CLI validation.
+- `resources/missions/initial.json`: editable sample mission definitions.
+- `scripts/gameplay/missions/Domain/`: scene-independent catalog, validation, progress, and infraction events.
+- `scripts/gameplay/missions/LocalMissionController.cs`: offline scene adapter for interaction range, sightline, and UI.
+- `tests/`: .NET rule checks and Godot scene smoke checks.
+- `scripts/dev/validate.ps1`: repeatable local CLI validation.
 - `docs/design/GDD.md`: confirmed game concept and proposed mechanics.
 - `docs/architecture/ARCHITECTURE.md`: current structure and planned authority boundaries.
 - `docs/architecture/DECISIONS.md`: architecture decisions and open questions.
@@ -58,4 +65,4 @@ The scene has a capsule player, ground collision, lighting, a following camera, 
 
 ## Current limits
 
-M02 still uses local input and movement. It does not implement missions, multiplayer, or server authority. Headless validation proves scene loading and sampled collision/route checks. The first visible playtest worked; detailed camera and route coverage remain open for refinement.
+M03 still uses local input and state; mission points are prototype completion rewards, not a finalized Score Attack policy. The three interactions are immediate and exterior-only. They do not implement contextual shopping, dog walking, bathrooms, evidence, reports, multiplayer, or server authority. Headless validation checks rules and sampled scene interactions; a visible mission playtest and detailed M02 camera/route review remain open.

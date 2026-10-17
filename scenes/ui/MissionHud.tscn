@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/MissionHud.cs" id="1_hud"]
+
+[node name="MissionHud" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="Tasks" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 490.0
+offset_bottom = 180.0
+theme_override_colors/font_color = Color(1, 1, 0.92, 1)
+theme_override_font_sizes/font_size = 22
+text = "MISSIONS"
+
+[node name="Prompt" type="Label" parent="."]
+anchor_left = 0.12
+anchor_top = 0.86
+anchor_right = 0.88
+anchor_bottom = 0.95
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.62, 1)
+theme_override_font_sizes/font_size = 22
+
+[node name="Feedback" type="Label" parent="."]
+anchor_left = 0.25
+anchor_top = 0.05
+anchor_right = 0.75
+anchor_bottom = 0.14
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+theme_override_colors/font_color = Color(1, 1, 0.92, 1)
+theme_override_font_sizes/font_size = 18
