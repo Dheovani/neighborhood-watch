@@ -3,5 +3,8 @@
 /android/
 /bin/
 /obj/
+**/bin/
+**/obj/
+tests/*.cs.uid
 /.vs/
 /tools/godot/

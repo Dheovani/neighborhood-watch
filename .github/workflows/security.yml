@@ -23,7 +23,9 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - name: Fail on moderate or higher known package vulnerabilities
-        run: dotnet restore NeighborhoodWatch.csproj -p:NuGetAudit=true -p:NuGetAuditLevel=moderate -warnaserror
+        run: |
+          dotnet restore NeighborhoodWatch.csproj -p:NuGetAudit=true -p:NuGetAuditLevel=moderate -warnaserror
+          dotnet restore tests/NeighborhoodWatch.DomainChecks.csproj -p:NuGetAudit=true -p:NuGetAuditLevel=moderate -warnaserror
 
   codeql:
     name: CodeQL C#

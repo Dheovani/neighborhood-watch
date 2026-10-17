@@ -1,0 +1,29 @@
+[
+  {
+    "id": "park_litter",
+    "title": "Leave a little litter",
+    "instruction": "Drop your paper on the park path instead of using a bin.",
+    "locationId": "park_path",
+    "offenseActions": ["drop_paper"],
+    "infractionCategory": "incivility",
+    "completionPoints": 10
+  },
+  {
+    "id": "neighbor_mail",
+    "title": "Curious neighbor",
+    "instruction": "Read a letter from your neighbor's mailbox.",
+    "locationId": "north_house_mailbox",
+    "offenseActions": ["read_mail"],
+    "infractionCategory": "privacy_intrusion",
+    "completionPoints": 15
+  },
+  {
+    "id": "market_snack",
+    "title": "One unpaid snack",
+    "instruction": "Take a snack from the market's outdoor display without paying.",
+    "locationId": "market_display",
+    "offenseActions": ["take_unpaid_snack"],
+    "infractionCategory": "petty_theft",
+    "completionPoints": 15
+  }
+]

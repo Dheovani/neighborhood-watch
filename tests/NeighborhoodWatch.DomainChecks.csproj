@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../scripts/gameplay/missions/Domain/*.cs" Link="Domain/%(Filename)%(Extension)" />
+    <None Include="../resources/missions/initial.json" Link="initial.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

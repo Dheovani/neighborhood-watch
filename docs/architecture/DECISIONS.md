@@ -26,6 +26,13 @@
 
 The player's 2026-10-17 clarification includes both petty crimes and rude or inconsiderate acts as reportable in-game infractions. "Offense" in planned code is a gameplay label, not a real-world legal finding. Keep missions silly and friendly; exclude killing, severe violence, violent robbery, corruption, and comparable grave wrongdoing. Exact fictional report outcomes remain open.
 
+## Accepted for the M03 prototype
+
+1. **JSON mission definitions.** Three immediate exterior actions need stable IDs and small amounts of text and reward data; JSON is easy to edit and validate without Godot editor work. Reconsider the format if future missions need complex conditions.
+2. **Plain C# domain session with a local Godot adapter.** Completion, points, and infraction events share one validated outcome. Godot provides range, sightline, input, and presentation; the session remains testable with `dotnet run` and must move to server ownership in M04.
+3. **Exterior sample missions pending content review.** Park litter, neighbor mail, and an unpaid market snack fit existing locations. Dog walking and bathroom examples require systems or interiors the map does not yet contain. These samples demonstrate mechanics and are not final mission or reward tuning.
+4. **No external test framework.** The domain checks use a small .NET console project linked to the pure domain files, avoiding new NuGet dependencies for the first rule tests.
+
 ## Unresolved
 
 - Movement replication and prediction model for acceptable latency.

@@ -1,0 +1,129 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/gameplay/missions/MissionSpot.cs" id="1_spot"]
+
+[sub_resource type="BoxMesh" id="Cube"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="MailShape"]
+size = Vector3(0.8, 1.5, 0.65)
+
+[sub_resource type="BoxShape3D" id="StandShape"]
+size = Vector3(1.8, 1.3, 0.9)
+
+[sub_resource type="BoxShape3D" id="BinShape"]
+size = Vector3(0.8, 1.2, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="MailBlue"]
+albedo_color = Color(0.22, 0.45, 0.7, 1)
+
+[sub_resource type="StandardMaterial3D" id="PostWood"]
+albedo_color = Color(0.45, 0.31, 0.23, 1)
+
+[sub_resource type="StandardMaterial3D" id="DisplayRed"]
+albedo_color = Color(0.73, 0.34, 0.32, 1)
+
+[sub_resource type="StandardMaterial3D" id="SnackYellow"]
+albedo_color = Color(0.98, 0.77, 0.29, 1)
+
+[sub_resource type="StandardMaterial3D" id="PaperWhite"]
+albedo_color = Color(0.96, 0.95, 0.83, 1)
+
+[sub_resource type="StandardMaterial3D" id="BinGreen"]
+albedo_color = Color(0.25, 0.52, 0.48, 1)
+
+[node name="MissionSpots" type="Node3D"]
+
+[node name="ParkLitter" type="Node3D" parent="."]
+position = Vector3(36, 0, 27.5)
+script = ExtResource("1_spot")
+MissionId = "park_litter"
+LocationId = "park_path"
+ActionId = "drop_paper"
+
+[node name="Paper" type="MeshInstance3D" parent="ParkLitter"]
+position = Vector3(0, 0.08, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("PaperWhite")
+scale = Vector3(0.55, 0.06, 0.45)
+
+[node name="Bin" type="StaticBody3D" parent="ParkLitter"]
+position = Vector3(1.3, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ParkLitter/Bin"]
+position = Vector3(0, 0.6, 0)
+shape = SubResource("BinShape")
+
+[node name="Mesh" type="MeshInstance3D" parent="ParkLitter/Bin"]
+position = Vector3(0, 0.6, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("BinGreen")
+scale = Vector3(0.8, 1.2, 0.8)
+
+[node name="ParkLabel" type="Label3D" parent="ParkLitter"]
+position = Vector3(0, 2.1, 0)
+billboard = 1
+text = "PARK"
+font_size = 48
+
+[node name="NeighborMail" type="Node3D" parent="."]
+position = Vector3(-38.2, 0, -17.2)
+script = ExtResource("1_spot")
+MissionId = "neighbor_mail"
+LocationId = "north_house_mailbox"
+ActionId = "read_mail"
+
+[node name="Mailbox" type="StaticBody3D" parent="NeighborMail"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NeighborMail/Mailbox"]
+position = Vector3(0, 0.75, 0)
+shape = SubResource("MailShape")
+
+[node name="Post" type="MeshInstance3D" parent="NeighborMail/Mailbox"]
+position = Vector3(0, 0.7, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("PostWood")
+scale = Vector3(0.18, 1.4, 0.18)
+
+[node name="Box" type="MeshInstance3D" parent="NeighborMail/Mailbox"]
+position = Vector3(0, 1.35, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("MailBlue")
+scale = Vector3(0.8, 0.45, 0.65)
+
+[node name="MailLabel" type="Label3D" parent="NeighborMail"]
+position = Vector3(0, 2.2, 0)
+billboard = 1
+text = "MAIL"
+font_size = 48
+
+[node name="MarketSnack" type="Node3D" parent="."]
+position = Vector3(34, 0, -18.2)
+script = ExtResource("1_spot")
+MissionId = "market_snack"
+LocationId = "market_display"
+ActionId = "take_unpaid_snack"
+
+[node name="Display" type="StaticBody3D" parent="MarketSnack"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MarketSnack/Display"]
+position = Vector3(0, 0.65, 0)
+shape = SubResource("StandShape")
+
+[node name="Stand" type="MeshInstance3D" parent="MarketSnack/Display"]
+position = Vector3(0, 0.65, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("DisplayRed")
+scale = Vector3(1.8, 1.3, 0.9)
+
+[node name="Snack" type="MeshInstance3D" parent="MarketSnack/Display"]
+position = Vector3(0, 1.45, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("SnackYellow")
+scale = Vector3(0.65, 0.25, 0.45)
+
+[node name="SnackLabel" type="Label3D" parent="MarketSnack"]
+position = Vector3(0, 2.25, 0)
+billboard = 1
+text = "SNACKS"
+font_size = 48

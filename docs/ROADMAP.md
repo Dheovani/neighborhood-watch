@@ -85,41 +85,42 @@ Estimates below are planning ranges for one developer working roughly six focuse
 
 ## M03 — Missions and offense events
 
-**State:** Planned; requires M02 approval and completion. **Estimate:** 5–8 development days.
+**State:** Approved by the player to begin on 2026-10-17; playable offline prototype implemented. Sample mission content and visible playtest remain open, so M03 is not yet complete. **Original estimate:** 5–8 development days.
 
 ### Set the rule boundary
 
 - [ ] Confirm the first sample missions and their exact in-world interactions; market unpaid item, uncollected dog waste, and gas station bathroom are player-provided candidates, not locked content.
-- [ ] Define infraction categories for mission data without assuming that all reportable acts are real-world crimes.
-- [ ] Review each sample mission against the silly, friendly tone and reject severe harm or grave wrongdoing.
+- [x] Define infraction categories for mission data without assuming that all reportable acts are real-world crimes.
+- [x] Review each sample mission against the silly, friendly tone and reject severe harm or grave wrongdoing.
 - [ ] Make any mission dependent on an environmental or animal event achievable without unbounded random waiting.
-- [ ] Decide whether mission definitions use Godot resources or a small text data format based on the concrete sample needs.
-- [ ] Define stable IDs, display text, valid locations, action requirements, completion conditions, and rewards for each sample mission.
-- [ ] Define one local owner of match state for this offline milestone; isolate it from UI and input so M04 can move ownership to the server.
-- [ ] Define an offense event with actor, offense type, location, timestamp or match tick, and source mission.
-- [ ] Make a successful offense action update mission progress and emit its offense event as one validated outcome.
-- [ ] Ensure declining or ignoring an offense leaves its mission incomplete and emits no completion reward.
+- [x] Decide whether mission definitions use Godot resources or a small text data format based on the concrete sample needs.
+- [x] Define stable IDs, display text, valid locations, action requirements, completion conditions, and rewards for each sample mission.
+- [x] Define one local owner of match state for this offline milestone; isolate it from UI and input so M04 can move ownership to the server.
+- [x] Define an offense event with actor, offense type, location, timestamp or match tick, and source mission.
+- [x] Make a successful offense action update mission progress and emit its offense event as one validated outcome.
+- [x] Ensure declining or ignoring an offense leaves its mission incomplete and emits no completion reward.
 
 ### Implement the first vertical slice
 
-- [ ] Add interaction detection with clear range and target selection.
-- [ ] Add one readable interaction prompt that states the offense before the player acts.
-- [ ] Implement the first sample mission end to end from assignment through action, event, and completion display.
+- [x] Add interaction detection with clear range and target selection.
+- [x] Add one readable interaction prompt that states the offense before the player acts.
+- [x] Implement the first sample mission end to end from assignment through action, event, and completion display.
 - [ ] Add the remaining approved sample missions through definitions and small action-specific components, without hardcoding them into a central switch statement.
-- [ ] Show assigned, incomplete, and completed missions in a minimal UI.
-- [ ] Show immediate feedback when an offense completes a mission.
-- [ ] Prevent duplicate completion and duplicate reward events from repeated input.
+- [x] Show assigned, incomplete, and completed missions in a minimal UI.
+- [x] Show immediate feedback when an offense completes a mission.
+- [x] Prevent duplicate completion and duplicate reward events from repeated input.
 - [ ] Handle invalid location, missing target, and interrupted interaction without awarding progress.
 - [ ] Preserve completed missions after the offender is later observed or reported; any penalty is a separate outcome.
 
 ### Validate and document
 
-- [ ] Add automated rule tests for valid completion, invalid context, duplicate input, and abstention.
-- [ ] Add a scene smoke check that a player can reach and trigger each sample interaction.
-- [ ] Verify every completed sample mission emits exactly one offense event.
-- [ ] Verify no sample mission grants completion without its required infraction.
-- [ ] Record mission data format and the event contract needed by M04 and M05.
-- [ ] Run the full build and Godot import/startup checks.
+- [x] Add automated rule tests for valid completion, invalid context, duplicate input, and abstention.
+- [x] Add a scene smoke check that a player can reach and trigger each sample interaction.
+- [x] Verify every completed sample mission emits exactly one offense event.
+- [x] Verify no sample mission grants completion without its required infraction.
+- [x] Record mission data format and the event contract needed by M04 and M05.
+- [x] Run the full build and Godot import/startup checks.
+- [ ] Play the three mission interactions visibly and review the prompt, prop placement, and exact sample content with the player.
 
 **Acceptance:** At least three approved minor-infraction missions can be assigned and completed in the prototype map. The samples may include a petty crime or an inconsiderate act. Completion, reward eligibility, and infraction event creation agree; abstention yields none of them. Evidence, reports, and multiplayer remain out of scope.
 
