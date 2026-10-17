@@ -8,7 +8,7 @@ The dependency flow is currently input actions → player controller → Godot p
 
 ## Planned boundaries, not implemented
 
-At M03, put task definitions in Godot resources or simple data files and keep task rules separate from scene presentation. Task completion and offense creation should be performed by authoritative match logic, with scenes supplying validated interaction context. Introduce abstractions only when concrete tasks reveal the needed variation.
+At M03, put mission definitions in Godot resources or simple data files and keep their rules separate from scene presentation. An authoritative infraction action should drive both mission completion and a reportable event; declining the action should leave the mission incomplete. In this design, an "offense event" is a gameplay term that may describe a petty crime or an inconsiderate act, not a real-world legal classification. Scenes supply validated interaction context. Introduce abstractions only when concrete missions reveal the needed variation.
 
 At M04, use Godot's high-level multiplayer API over ENet with a dedicated headless server. The server owns match state and validates client action requests. Clients send intent and render replicated results. Movement authority and reconciliation need an explicit design and latency test before implementation. Do not assume the current controller can simply be exposed as an RPC.
 

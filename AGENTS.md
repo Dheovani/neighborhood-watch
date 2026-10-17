@@ -7,6 +7,8 @@
 - Prefer C#, text `.tscn` files, CLI builds, and headless Godot checks. Document any unavoidable editor action precisely.
 - Keep gameplay rules separate from presentation and input. At M04 and beyond, the server owns authoritative match state and validates client intents.
 - Keep progress, match currency, and reputation independent. Do not treat client screenshots or video as authoritative evidence.
+- Respect the player's 2026-10-17 clarification over conflicting pasted specifications: the setting is an ordinary U.S. neighborhood, not a specifically suburban one, and mission completion requires a minor in-game infraction. Declining that act leaves the mission incomplete and awards no completion points. Do not add a responsible alternate completion path.
+- The neighborhood has houses and gardens alongside a few shops, a gas station, and a park. Do not visually associate low income with the game's rule-breaking behavior. Reportable in-game infractions include petty crimes and noncriminal incivilities; do not assume that every infraction is a real-world crime. Preserve a silly, friendly tone and exclude grave wrongdoing and severe violence.
 - Add abstractions and dependencies only for concrete needs. Do not add a database, web backend, authentication service, or editor plugin without approval.
 - Update documentation when a decision becomes confirmed, changes, or is implemented. Mark speculative mechanics as proposed or unresolved.
 

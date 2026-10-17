@@ -1,11 +1,11 @@
 # Neighborhood Watch
 
-Neighborhood Watch is a planned 3D multiplayer social stealth game about finishing ordinary errands while watching neighbors and hiding your own rule breaking. **M01 currently implements a single player movement sandbox only.** Gameplay rules and networking are documented proposals, not implemented features.
+Neighborhood Watch is a planned 3D multiplayer social stealth game set in an ordinary U.S. neighborhood with houses and gardens, some shops, a gas station, and a park. The setting does not associate income level with wrongdoing. Players complete missions through minor reportable infractions, ranging from petty crimes to rude behavior, while watching and reporting neighbors who do the same. A player may refuse a mission's infraction, but then does not complete that mission or receive its points. The intended tone is silly and friendly, without grave crime or severe violence. **M01 currently implements a single player movement sandbox only.** Gameplay rules and networking are documented proposals, not implemented features.
 
 ## Requirements
 
 - Windows PC for the current development workflow.
-- Godot **4.7.2 stable .NET** executable. The installed ZIP is `Godot_v4.7.2-stable_mono_win64.zip`; extract it outside the repository.
+- Godot **4.7.2 stable .NET**. A local copy lives in ignored `tools/godot/`. If missing, put `Godot_v4.7.2-stable_mono_win64.zip` in Downloads and the validation script extracts it there. An existing executable can be supplied with `-GodotPath` or `GODOT_EXE`.
 - .NET SDK 10.0.401 is verified. The game project targets `net8.0`, which is supported by the installed SDK and runtime.
 - Visual Studio Code with the recommended C# and Godot extensions.
 
@@ -16,12 +16,11 @@ Godot's .NET edition is required. The standard Godot executable cannot compile C
 From PowerShell in the project root:
 
 ```powershell
-$env:GODOT_EXE = 'C:\path\to\Godot_v4.7.2-stable_mono_win64_console.exe'
 .\scripts\dev\validate.ps1
-& $env:GODOT_EXE --path .
+.\scripts\dev\validate.ps1 -Play
 ```
 
-The validation script restores packages from the Godot ZIP's bundled NuGet feed when available, builds C#, imports scenes, runs the main scene headlessly for 20 frames, and checks movement, ground contact, and camera rotation. To build only, run `dotnet build NeighborhoodWatch.csproj`. On first restore without the bundled packages, NuGet network access may be needed.
+The first command validates; the second repeats validation and opens the game for a visual playtest. An explicit `-GodotPath` takes priority; otherwise the script checks `tools/godot/`, `GODOT_EXE`, its temporary cache, PATH, and the named Downloads ZIP. It restores packages from Godot's bundled NuGet feed when available, builds C#, imports scenes, runs the main scene headlessly for 20 frames, and checks movement, ground contact, and camera rotation. To build only, run `dotnet build NeighborhoodWatch.csproj`. On first restore without the bundled packages, NuGet network access may be needed.
 
 Open this folder in VS Code. Edit C# and text scene files there; Godot's editor is only needed to inspect scene composition or test the controls visually.
 
@@ -46,7 +45,7 @@ The test scene has a capsule player, ground collision, lighting, and a following
 - `docs/design/GDD.md`: confirmed game concept and proposed mechanics.
 - `docs/architecture/ARCHITECTURE.md`: current structure and planned authority boundaries.
 - `docs/architecture/DECISIONS.md`: architecture decisions and open questions.
-- `docs/ROADMAP.md`: milestones, acceptance criteria, and validation.
+- `docs/ROADMAP.md`: detailed implementation checklist, acceptance criteria, validation, and milestone approval gates.
 
 ## Current limits
 

@@ -10,12 +10,18 @@
 
 ## Proposed for later milestones
 
-- Data-driven task methods and configurable match mode policies.
+- Data-driven infraction missions and configurable match mode policies. A responsible alternate completion route is excluded by the player's 2026-10-17 clarification, which supersedes contrary examples in earlier specifications.
+- The setting is an ordinary U.S. neighborhood with houses and gardens plus a few shops, a gas station, and a park. Avoid a visual link between low income and wrongdoing. The city, density, and architectural references remain open for M02.
 - Server-owned offense events, evidence evaluation, reporting outcomes, and balances.
 - Godot high-level multiplayer API, ENet, and a dedicated headless server.
+
+## Confirmed gameplay boundary
+
+The player's 2026-10-17 clarification includes both petty crimes and rude or inconsiderate acts as reportable in-game infractions. "Offense" in planned code is a gameplay label, not a real-world legal finding. Keep missions silly and friendly; exclude killing, severe violence, violent robbery, corruption, and comparable grave wrongdoing. Exact fictional report outcomes remain open.
 
 ## Unresolved
 
 - Movement replication and prediction model for acceptable latency.
 - Evidence scoring and observation rules.
 - Exact mode tie breakers and scoring numbers.
+- Fictional report outcomes and penalties for different infraction categories.
