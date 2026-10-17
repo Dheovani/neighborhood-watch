@@ -1,0 +1,293 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/environments/House.tscn" id="1_house"]
+[ext_resource type="PackedScene" path="res://scenes/environments/Market.tscn" id="2_market"]
+[ext_resource type="PackedScene" path="res://scenes/environments/GasStation.tscn" id="3_gas"]
+[ext_resource type="PackedScene" path="res://scenes/environments/Park.tscn" id="4_park"]
+[ext_resource type="PackedScene" path="res://scenes/environments/Tree.tscn" id="5_tree"]
+[ext_resource type="PackedScene" path="res://scenes/environments/ParkedCar.tscn" id="6_car"]
+
+[sub_resource type="BoxMesh" id="Cube"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="GroundShape"]
+size = Vector3(112, 1, 88)
+
+[sub_resource type="BoxShape3D" id="EastWestShape"]
+size = Vector3(1, 2, 88)
+
+[sub_resource type="BoxShape3D" id="NorthSouthShape"]
+size = Vector3(112, 2, 1)
+
+[sub_resource type="StandardMaterial3D" id="Grass"]
+albedo_color = Color(0.48, 0.7, 0.42, 1)
+
+[sub_resource type="StandardMaterial3D" id="Asphalt"]
+albedo_color = Color(0.32, 0.36, 0.4, 1)
+
+[sub_resource type="StandardMaterial3D" id="Sidewalk"]
+albedo_color = Color(0.76, 0.77, 0.72, 1)
+
+[sub_resource type="StandardMaterial3D" id="LanePaint"]
+albedo_color = Color(0.97, 0.91, 0.67, 1)
+
+[sub_resource type="StandardMaterial3D" id="CrosswalkPaint"]
+albedo_color = Color(0.96, 0.96, 0.87, 1)
+
+[sub_resource type="StandardMaterial3D" id="Boundary"]
+albedo_color = Color(0.39, 0.58, 0.38, 1)
+
+[sub_resource type="StandardMaterial3D" id="Walkway"]
+albedo_color = Color(0.8, 0.76, 0.66, 1)
+
+[node name="Neighborhood" type="Node3D"]
+
+[node name="Ground" type="StaticBody3D" parent="."]
+position = Vector3(0, -0.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("GroundShape")
+
+[node name="Mesh" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Grass")
+scale = Vector3(112, 1, 88)
+
+[node name="Road" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.025, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Asphalt")
+scale = Vector3(110, 0.04, 12)
+
+[node name="NorthSidewalk" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.04, -8)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Sidewalk")
+scale = Vector3(110, 0.06, 4)
+
+[node name="SouthSidewalk" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.04, 8)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Sidewalk")
+scale = Vector3(110, 0.06, 4)
+
+[node name="RoadMarkings" type="Node3D" parent="."]
+
+[node name="DashWest4" type="MeshInstance3D" parent="RoadMarkings"]
+position = Vector3(-43, 0.055, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("LanePaint")
+scale = Vector3(5, 0.02, 0.18)
+
+[node name="DashWest3" type="MeshInstance3D" parent="RoadMarkings"]
+position = Vector3(-30, 0.055, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("LanePaint")
+scale = Vector3(5, 0.02, 0.18)
+
+[node name="DashWest2" type="MeshInstance3D" parent="RoadMarkings"]
+position = Vector3(-17, 0.055, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("LanePaint")
+scale = Vector3(5, 0.02, 0.18)
+
+[node name="DashWest1" type="MeshInstance3D" parent="RoadMarkings"]
+position = Vector3(-4, 0.055, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("LanePaint")
+scale = Vector3(5, 0.02, 0.18)
+
+[node name="DashEast1" type="MeshInstance3D" parent="RoadMarkings"]
+position = Vector3(9, 0.055, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("LanePaint")
+scale = Vector3(5, 0.02, 0.18)
+
+[node name="DashEast2" type="MeshInstance3D" parent="RoadMarkings"]
+position = Vector3(22, 0.055, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("LanePaint")
+scale = Vector3(5, 0.02, 0.18)
+
+[node name="DashEast3" type="MeshInstance3D" parent="RoadMarkings"]
+position = Vector3(43, 0.055, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("LanePaint")
+scale = Vector3(5, 0.02, 0.18)
+
+[node name="Crosswalk" type="Node3D" parent="RoadMarkings"]
+
+[node name="Stripe1" type="MeshInstance3D" parent="RoadMarkings/Crosswalk"]
+position = Vector3(28, 0.06, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("CrosswalkPaint")
+scale = Vector3(0.72, 0.02, 10.5)
+
+[node name="Stripe2" type="MeshInstance3D" parent="RoadMarkings/Crosswalk"]
+position = Vector3(29.5, 0.06, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("CrosswalkPaint")
+scale = Vector3(0.72, 0.02, 10.5)
+
+[node name="Stripe3" type="MeshInstance3D" parent="RoadMarkings/Crosswalk"]
+position = Vector3(31, 0.06, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("CrosswalkPaint")
+scale = Vector3(0.72, 0.02, 10.5)
+
+[node name="Stripe4" type="MeshInstance3D" parent="RoadMarkings/Crosswalk"]
+position = Vector3(32.5, 0.06, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("CrosswalkPaint")
+scale = Vector3(0.72, 0.02, 10.5)
+
+[node name="Stripe5" type="MeshInstance3D" parent="RoadMarkings/Crosswalk"]
+position = Vector3(34, 0.06, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("CrosswalkPaint")
+scale = Vector3(0.72, 0.02, 10.5)
+
+[node name="Stripe6" type="MeshInstance3D" parent="RoadMarkings/Crosswalk"]
+position = Vector3(35.5, 0.06, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("CrosswalkPaint")
+scale = Vector3(0.72, 0.02, 10.5)
+
+[node name="Paths" type="Node3D" parent="."]
+
+[node name="NorthHouseWest" type="MeshInstance3D" parent="Paths"]
+position = Vector3(-40, 0.04, -13.7)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walkway")
+scale = Vector3(1.8, 0.06, 7.4)
+
+[node name="NorthHouseCenter" type="MeshInstance3D" parent="Paths"]
+position = Vector3(-20, 0.04, -13.7)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walkway")
+scale = Vector3(1.8, 0.06, 7.4)
+
+[node name="NorthHouseEast" type="MeshInstance3D" parent="Paths"]
+position = Vector3(0, 0.04, -13.7)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walkway")
+scale = Vector3(1.8, 0.06, 7.4)
+
+[node name="SouthHouseWest" type="MeshInstance3D" parent="Paths"]
+position = Vector3(-40, 0.04, 13.7)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walkway")
+scale = Vector3(1.8, 0.06, 7.4)
+
+[node name="SouthHouseCenter" type="MeshInstance3D" parent="Paths"]
+position = Vector3(-20, 0.04, 13.7)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walkway")
+scale = Vector3(1.8, 0.06, 7.4)
+
+[node name="MarketWalk" type="MeshInstance3D" parent="Paths"]
+position = Vector3(31, 0.04, -14)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walkway")
+scale = Vector3(2.4, 0.06, 8)
+
+[node name="GasStationWalk" type="MeshInstance3D" parent="Paths"]
+position = Vector3(5.4, 0.04, 12.1)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walkway")
+scale = Vector3(2.4, 0.06, 4.2)
+
+[node name="ParkWalk" type="MeshInstance3D" parent="Paths"]
+position = Vector3(35, 0.04, 12.8)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walkway")
+scale = Vector3(2.4, 0.06, 5.6)
+
+[node name="Sites" type="Node3D" parent="."]
+
+[node name="NorthHouseWest" parent="Sites" instance=ExtResource("1_house")]
+position = Vector3(-40, 0, -25)
+
+[node name="NorthHouseCenter" parent="Sites" instance=ExtResource("1_house")]
+position = Vector3(-20, 0, -25)
+
+[node name="NorthHouseEast" parent="Sites" instance=ExtResource("1_house")]
+position = Vector3(0, 0, -25)
+
+[node name="SouthHouseWest" parent="Sites" instance=ExtResource("1_house")]
+position = Vector3(-40, 0, 25)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="SouthHouseCenter" parent="Sites" instance=ExtResource("1_house")]
+position = Vector3(-20, 0, 25)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="Market" parent="Sites" instance=ExtResource("2_market")]
+position = Vector3(31, 0, -25)
+
+[node name="GasStation" parent="Sites" instance=ExtResource("3_gas")]
+position = Vector3(4, 0, 26)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="Park" parent="Sites" instance=ExtResource("4_park")]
+position = Vector3(35, 0, 26)
+
+[node name="StreetProps" type="Node3D" parent="."]
+
+[node name="ParkedCarWest" parent="StreetProps" instance=ExtResource("6_car")]
+position = Vector3(-31, 0, 4.5)
+
+[node name="ParkedCarEast" parent="StreetProps" instance=ExtResource("6_car")]
+position = Vector3(18, 0, -4.5)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="StreetTreeWest" parent="StreetProps" instance=ExtResource("5_tree")]
+position = Vector3(-48, 0, -14)
+
+[node name="StreetTreeCenter" parent="StreetProps" instance=ExtResource("5_tree")]
+position = Vector3(-10, 0, 16)
+
+[node name="StreetTreeEast" parent="StreetProps" instance=ExtResource("5_tree")]
+position = Vector3(48, 0, -15)
+
+[node name="Boundaries" type="StaticBody3D" parent="."]
+
+[node name="EastCollision" type="CollisionShape3D" parent="Boundaries"]
+position = Vector3(55.5, 1, 0)
+shape = SubResource("EastWestShape")
+
+[node name="WestCollision" type="CollisionShape3D" parent="Boundaries"]
+position = Vector3(-55.5, 1, 0)
+shape = SubResource("EastWestShape")
+
+[node name="NorthCollision" type="CollisionShape3D" parent="Boundaries"]
+position = Vector3(0, 1, -43.5)
+shape = SubResource("NorthSouthShape")
+
+[node name="SouthCollision" type="CollisionShape3D" parent="Boundaries"]
+position = Vector3(0, 1, 43.5)
+shape = SubResource("NorthSouthShape")
+
+[node name="EastHedge" type="MeshInstance3D" parent="Boundaries"]
+position = Vector3(55.5, 1, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Boundary")
+scale = Vector3(1, 2, 88)
+
+[node name="WestHedge" type="MeshInstance3D" parent="Boundaries"]
+position = Vector3(-55.5, 1, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Boundary")
+scale = Vector3(1, 2, 88)
+
+[node name="NorthHedge" type="MeshInstance3D" parent="Boundaries"]
+position = Vector3(0, 1, -43.5)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Boundary")
+scale = Vector3(112, 2, 1)
+
+[node name="SouthHedge" type="MeshInstance3D" parent="Boundaries"]
+position = Vector3(0, 1, 43.5)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Boundary")
+scale = Vector3(112, 2, 1)

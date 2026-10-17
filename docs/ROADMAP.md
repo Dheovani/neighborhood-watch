@@ -15,7 +15,7 @@ Estimates below are planning ranges for one developer working roughly six focuse
 
 ## M01 — Project foundation
 
-**State:** Automated validation complete; visual playtest pending. **Remaining estimate:** 30–60 minutes.
+**State:** Complete. Automated validation and the three visual checks below passed during M01.
 
 ### Environment and project
 
@@ -47,39 +47,39 @@ Estimates below are planning ranges for one developer working roughly six focuse
 
 ## M02 — Ordinary U.S. neighborhood prototype
 
-**State:** Planned; not approved for implementation. **Estimate:** 3–5 development days after visual direction is approved.
+**State:** Primitive neighborhood prototype implemented and reported working in a visible playtest on 2026-10-17. Detailed route and art review remains; this does not block a prototype PR. **Original estimate:** 3–5 development days.
 
 ### Decide the small playable area
 
 - [ ] Select visual references for U.S. houses with gardens, a small market, a gas station, and a park without coding the area as low income.
 - [ ] Assess the Synty POLYGON Town Pack or alternatives for the chosen layout, Godot 4.7.2 import, licence, and missing pieces before purchase.
-- [ ] Decide the prototype block's density, approximate walkable dimensions, and boundary treatment.
-- [ ] Draw a simple top-down block plan showing homes, gardens, streets, the market, gas station, park, parking, and potential mission locations.
-- [ ] Identify sightlines, hiding spots, and routes that support observation and evasion.
-- [ ] Approve the block plan before producing detailed scene geometry.
+- [x] Decide the prototype block's density, approximate walkable dimensions, and boundary treatment.
+- [x] Draw a simple top-down block plan showing homes, gardens, streets, the market, gas station, park, parking, and potential mission locations.
+- [x] Identify sightlines, hiding spots, and routes that support observation and evasion.
+- [ ] Review the implemented block plan and placement visually before treating M02 as complete.
 
 ### Build the environment
 
-- [ ] Split the environment into reusable text scenes for a street segment, sidewalk, building shell, and props only where reuse is demonstrated.
-- [ ] Replace the M01 flat test ground with one walkable block assembled from primitive or simple stylized meshes.
-- [ ] Add recognizable U.S. street cues such as road markings, curb, parked vehicles, signs, and building entrances, without assuming a specific city.
-- [ ] Place residential houses and gardens alongside a small market and gas station so the area reads as a lived-in neighborhood.
-- [ ] Make the park a walkable public space with paths and sightlines suitable for future dog-walking interactions.
-- [ ] Mark potential market and gas station interiors or entrances for M03; decide their accessible scope before adding detailed rooms.
-- [ ] Add small landmarks that help players orient themselves without relying on a minimap.
-- [ ] Use a restrained placeholder color palette with clear contrast between walkable ground, walls, and interactive objects.
-- [ ] Add collision to buildings, props, street fixtures, and map boundaries.
+- [x] Use reusable text scenes for repeated buildings and props; keep the single road and sidewalks in the neighborhood scene.
+- [x] Replace the M01 flat test ground with one walkable block assembled from primitive or simple stylized meshes.
+- [x] Add recognizable U.S. street cues such as road markings, curb, parked vehicles, signs, and building entrances, without assuming a specific city.
+- [x] Place residential houses and gardens alongside a small market and gas station so the area reads as a lived-in neighborhood.
+- [x] Make the park a walkable public space with paths and sightlines suitable for future dog-walking interactions.
+- [x] Mark potential market and gas station interiors or entrances for M03; decide their accessible scope before adding detailed rooms.
+- [x] Add small landmarks that help players orient themselves without relying on a minimap.
+- [x] Use a restrained placeholder color palette with clear contrast between walkable ground, walls, and interactive objects.
+- [x] Add collision to buildings, props, street fixtures, and map boundaries.
 - [ ] Verify the camera can navigate tight spaces without persistent wall clipping or losing the player.
-- [ ] Mark possible future interaction locations for a market purchase, dog walk, and gas station bathroom, without implementing missions yet.
-- [ ] Keep placeholder props and markers independent of mission rules so M03 can replace them without rebuilding the map.
+- [x] Mark possible future interaction locations for a market purchase, dog walk, and gas station bathroom, without implementing missions yet.
+- [x] Keep placeholder props and markers independent of mission rules so M03 can replace them without rebuilding the map.
 
 ### Validate and document
 
-- [ ] Add a headless scene-load check for the neighborhood scene.
+- [x] Add a headless scene-load check for the neighborhood scene.
 - [ ] Walk every intended route and verify there are no collision gaps, trapped areas, or inaccessible markers.
 - [ ] Verify key observation positions have useful sightlines and at least one practical route around them.
 - [ ] Check the map remains readable at the expected third-person camera distance.
-- [ ] Record the chosen visual references, reusable scene pieces, and known map limitations.
+- [x] Record the chosen visual references, reusable scene pieces, and known map limitations.
 
 **Acceptance:** One small U.S. neighborhood area with houses and gardens, a market, a gas station, and a park is readable, traversable, and supports future mission and surveillance interactions. M02 adds no mission, evidence, or multiplayer logic.
 
@@ -251,6 +251,6 @@ Estimates below are planning ranges for one developer working roughly six focuse
 
 ## Approval gates
 
-- [ ] Complete M01's visual playtest and record any controller or camera fixes.
-- [ ] Receive explicit approval before implementing M02.
+- [x] Complete M01's visual playtest and record any controller or camera fixes.
+- [x] Receive explicit approval before implementing M02.
 - [ ] At the end of each later milestone, review its acceptance evidence and unresolved decisions before approving the next one.

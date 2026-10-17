@@ -52,6 +52,6 @@ Surveillance equipment can improve observation, while stealth equipment can make
 - Equipment catalog, costs, counterplay, and whether offense points belong in Score Attack.
 - Final player count and map size after playtesting.
 
-## Implemented in M01
+## Implemented through M02
 
-A capsule player can move and jump on a flat test ground with a mouse-controlled follow camera. No gameplay loop, multiplayer, or scoring is implemented.
+A capsule player can move and jump through a primitive neighborhood with a mouse-controlled follow camera. The prototype has five houses, a market, a gas station, a park, road and sidewalks, simple props, and exterior location markers. Buildings are closed shells. No mission interactions, gameplay loop, multiplayer, or scoring are implemented. The block layout is recorded in `docs/design/M02_BLOCK_PLAN.md`.

@@ -69,3 +69,5 @@ jobs:
         run: '"$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --quit-after 20'
       - name: Test movement and camera
         run: '"$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/movement_smoke.gd'
+      - name: Test neighborhood layout and collision
+        run: '"$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/neighborhood_smoke.gd'

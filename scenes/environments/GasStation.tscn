@@ -1,0 +1,155 @@
+[gd_scene load_steps=12 format=3]
+
+[sub_resource type="BoxShape3D" id="BuildingShape"]
+size = Vector3(11, 4, 7)
+
+[sub_resource type="BoxShape3D" id="PumpShape"]
+size = Vector3(0.9, 1.8, 0.8)
+
+[sub_resource type="BoxShape3D" id="ColumnShape"]
+size = Vector3(0.45, 3.5, 0.45)
+
+[sub_resource type="BoxMesh" id="Cube"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="Walls"]
+albedo_color = Color(0.88, 0.9, 0.83, 1)
+
+[sub_resource type="StandardMaterial3D" id="Trim"]
+albedo_color = Color(0.22, 0.52, 0.69, 1)
+
+[sub_resource type="StandardMaterial3D" id="Glass"]
+albedo_color = Color(0.37, 0.68, 0.75, 1)
+
+[sub_resource type="StandardMaterial3D" id="Canopy"]
+albedo_color = Color(0.93, 0.79, 0.36, 1)
+
+[sub_resource type="StandardMaterial3D" id="Pump"]
+albedo_color = Color(0.38, 0.57, 0.66, 1)
+
+[sub_resource type="StandardMaterial3D" id="Pavement"]
+albedo_color = Color(0.64, 0.67, 0.65, 1)
+
+[sub_resource type="StandardMaterial3D" id="Sign"]
+albedo_color = Color(0.99, 0.96, 0.76, 1)
+
+[node name="GasStation" type="Node3D"]
+
+[node name="Forecourt" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.035, 5)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Pavement")
+scale = Vector3(20, 0.06, 13)
+
+[node name="Building" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Building"]
+position = Vector3(0, 2, 0)
+shape = SubResource("BuildingShape")
+
+[node name="Walls" type="MeshInstance3D" parent="Building"]
+position = Vector3(0, 2, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Walls")
+scale = Vector3(11, 4, 7)
+
+[node name="Roof" type="MeshInstance3D" parent="Building"]
+position = Vector3(0, 4.15, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Trim")
+scale = Vector3(12, 0.3, 8)
+
+[node name="FrontWindow" type="MeshInstance3D" parent="Building"]
+position = Vector3(-2.7, 2, 3.56)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Glass")
+scale = Vector3(3.4, 2.3, 0.12)
+
+[node name="Door" type="MeshInstance3D" parent="Building"]
+position = Vector3(1.4, 1.45, 3.56)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Glass")
+scale = Vector3(1.7, 2.9, 0.12)
+
+[node name="BathroomDoor" type="MeshInstance3D" parent="Building"]
+position = Vector3(5.56, 1.25, 0.9)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Trim")
+scale = Vector3(0.12, 2.5, 1.5)
+
+[node name="Canopy" type="MeshInstance3D" parent="."]
+position = Vector3(0, 4.05, 8)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Canopy")
+scale = Vector3(13, 0.45, 8)
+
+[node name="CanopyColumnLeft" type="StaticBody3D" parent="."]
+position = Vector3(-5.7, 0, 10.8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CanopyColumnLeft"]
+position = Vector3(0, 1.75, 0)
+shape = SubResource("ColumnShape")
+
+[node name="Mesh" type="MeshInstance3D" parent="CanopyColumnLeft"]
+position = Vector3(0, 1.75, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Trim")
+scale = Vector3(0.45, 3.5, 0.45)
+
+[node name="CanopyColumnRight" type="StaticBody3D" parent="."]
+position = Vector3(5.7, 0, 10.8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CanopyColumnRight"]
+position = Vector3(0, 1.75, 0)
+shape = SubResource("ColumnShape")
+
+[node name="Mesh" type="MeshInstance3D" parent="CanopyColumnRight"]
+position = Vector3(0, 1.75, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Trim")
+scale = Vector3(0.45, 3.5, 0.45)
+
+[node name="PumpLeft" type="StaticBody3D" parent="."]
+position = Vector3(-2.7, 0, 8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PumpLeft"]
+position = Vector3(0, 0.9, 0)
+shape = SubResource("PumpShape")
+
+[node name="Mesh" type="MeshInstance3D" parent="PumpLeft"]
+position = Vector3(0, 0.9, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Pump")
+scale = Vector3(0.9, 1.8, 0.8)
+
+[node name="PumpRight" type="StaticBody3D" parent="."]
+position = Vector3(2.7, 0, 8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PumpRight"]
+position = Vector3(0, 0.9, 0)
+shape = SubResource("PumpShape")
+
+[node name="Mesh" type="MeshInstance3D" parent="PumpRight"]
+position = Vector3(0, 0.9, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Pump")
+scale = Vector3(0.9, 1.8, 0.8)
+
+[node name="SignPanel" type="MeshInstance3D" parent="."]
+position = Vector3(0, 5, 0)
+mesh = SubResource("Cube")
+surface_material_override/0 = SubResource("Sign")
+scale = Vector3(8, 0.9, 0.2)
+
+[node name="SignText" type="Label3D" parent="."]
+position = Vector3(0, 5, 0.13)
+pixel_size = 0.005
+text = "GAS & GO"
+font_size = 80
+modulate = Color(0.25, 0.36, 0.43, 1)
+
+[node name="Entrance" type="Marker3D" parent="."]
+position = Vector3(1.4, 0.05, 5)
+
+[node name="BathroomEntrance" type="Marker3D" parent="."]
+position = Vector3(7.3, 0.05, 0.9)

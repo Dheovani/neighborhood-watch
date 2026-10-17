@@ -15,6 +15,13 @@
 - Server-owned offense events, evidence evaluation, reporting outcomes, and balances.
 - Godot high-level multiplayer API, ENet, and a dedicated headless server.
 
+## Accepted for the M02 prototype
+
+1. **One compact block built from text scenes and primitive meshes.** The 112 m by 88 m footprint tests traversal and observation sightlines before selecting final art assets or a city reference.
+2. **Closed building shells with exterior location markers.** This establishes readable places and collision without implementing interiors or pretending the example missions already exist.
+3. **One broad ground collider and visual flat paths.** This keeps the current controller's routes walkable while solid buildings, cars, trees, benches, pumps, and the perimeter have separate collision.
+4. **No purchased art dependency.** The Synty pack remains a candidate; its Godot 4.5.1 project and FBX files need a small import trial in Godot 4.7.2 before adoption.
+
 ## Confirmed gameplay boundary
 
 The player's 2026-10-17 clarification includes both petty crimes and rude or inconsiderate acts as reportable in-game infractions. "Offense" in planned code is a gameplay label, not a real-world legal finding. Keep missions silly and friendly; exclude killing, severe violence, violent robbery, corruption, and comparable grave wrongdoing. Exact fictional report outcomes remain open.

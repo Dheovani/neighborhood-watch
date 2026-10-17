@@ -73,7 +73,10 @@ if ($LASTEXITCODE -ne 0) { throw 'Godot scene launch failed.' }
 & $GodotPath --headless --path $projectRoot --script 'res://tests/movement_smoke.gd'
 if ($LASTEXITCODE -ne 0) { throw 'Movement smoke test failed.' }
 
-Write-Host 'M01 validation passed: build, import, scene launch, and movement smoke.'
+& $GodotPath --headless --path $projectRoot --script 'res://tests/neighborhood_smoke.gd'
+if ($LASTEXITCODE -ne 0) { throw 'Neighborhood smoke test failed.' }
+
+Write-Host 'Validation passed: build, import, scene launch, movement smoke, and neighborhood smoke.'
 
 if ($Play) {
     & $GodotPath --path $projectRoot
