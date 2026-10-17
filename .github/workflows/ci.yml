@@ -62,7 +62,7 @@ jobs:
       - name: Restore and build game
         run: |
           dotnet restore NeighborhoodWatch.csproj
-          dotnet build NeighborhoodWatch.csproj --configuration Release --no-restore
+          dotnet build NeighborhoodWatch.csproj --configuration Debug --no-restore
       - name: Import project
         run: '"$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --editor --import --quit'
       - name: Launch main scene
