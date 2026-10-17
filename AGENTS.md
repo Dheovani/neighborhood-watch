@@ -4,6 +4,7 @@
 
 - Read `README.md`, `docs/design/GDD.md`, `docs/architecture/ARCHITECTURE.md`, `docs/architecture/DECISIONS.md`, and `docs/ROADMAP.md` before changing gameplay architecture.
 - Implement only the approved milestone. Never proceed automatically to the next milestone.
+- Name branches with a short, plain description of the work, such as `github-automation`. Do not use type prefixes (`chore`, `feat`, `fix`, etc.), slashes, or milestone identifiers.
 - Prefer C#, text `.tscn` files, CLI builds, and headless Godot checks. Document any unavoidable editor action precisely.
 - Keep gameplay rules separate from presentation and input. At M04 and beyond, the server owns authoritative match state and validates client intents.
 - Keep progress, match currency, and reputation independent. Do not treat client screenshots or video as authoritative evidence.

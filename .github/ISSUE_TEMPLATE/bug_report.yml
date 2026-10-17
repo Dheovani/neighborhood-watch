@@ -1,0 +1,44 @@
+name: Bug report
+description: Report a reproducible problem in an implemented feature.
+title: '[Bug] '
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: 'For vulnerabilities, use GitHub private vulnerability reporting instead of a public issue.'
+  - type: input
+    id: build
+    attributes:
+      label: Build or commit
+      description: Branch, commit hash, or release where the problem occurs.
+      placeholder: 'master at abc1234'
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Godot version, and .NET version if relevant.
+      placeholder: 'Windows 11, Godot 4.7.2 .NET, .NET SDK 10.0.401'
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: '1. Open the main scene\n2. ...'
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include logs, screenshots, or video if they help reproduce the issue.
+    validations:
+      required: true

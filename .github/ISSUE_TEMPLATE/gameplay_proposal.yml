@@ -1,0 +1,38 @@
+name: Gameplay proposal
+description: Suggest a mission, location, mechanic, or rule for design review.
+title: '[Design] '
+labels: []
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Mission or minor infraction
+        - Neighborhood location
+        - Surveillance or reporting
+        - Match rule or scoring
+        - Other gameplay mechanic
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Describe what the player does and what happens in the game.
+    validations:
+      required: true
+  - type: textarea
+    id: fit
+    attributes:
+      label: Tone and player choice
+      description: Explain how it fits the silly, friendly U.S. neighborhood setting and what happens if a player declines a mission.
+    validations:
+      required: true
+  - type: textarea
+    id: open_questions
+    attributes:
+      label: Open design questions
+      description: Mark uncertain rules as proposals; do not assume they are approved.
+    validations:
+      required: false
