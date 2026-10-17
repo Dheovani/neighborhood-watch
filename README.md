@@ -24,6 +24,12 @@ The first command validates; the second repeats validation and opens the game fo
 
 Open this folder in VS Code. Edit C# and text scene files there; Godot's editor is only needed to inspect scene composition or test the controls visually.
 
+## GitHub automation
+
+Pull requests targeting `master` run two workflows. **CI** verifies C# formatting, builds with warnings as errors, then imports and launches the project in headless Godot 4.7.2 .NET and runs the movement smoke test. **Security** audits NuGet dependencies for known vulnerabilities of moderate severity or higher. Public repositories also run C# CodeQL; GitHub requires an eligible Code Security plan for private repositories, so that job is skipped there. The Godot download is pinned to the official 4.7.2 release and checked against its SHA-256 digest.
+
+Dependabot checks GitHub Actions and NuGet weekly. `Godot.NET.Sdk` updates are excluded because the SDK and installed Godot editor must be upgraded together and validated locally. GitHub issue forms and the pull request template live in `.github/`. Recommended branch protection checks are **Code quality**, **Game smoke**, and **NuGet audit**; do not require **CodeQL C#** while the repository is private. CI on GitHub starts only after this branch is committed and pushed. The local Windows equivalent remains `./scripts/dev/validate.ps1`.
+
 ## Controls
 
 | Input | Action |
