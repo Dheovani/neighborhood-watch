@@ -5,6 +5,7 @@ public sealed class MissionSession
     private readonly Dictionary<string, MissionDefinition> _assigned;
     private readonly HashSet<string> _completed = new(StringComparer.Ordinal);
     private readonly List<InfractionEvent> _events = [];
+    private readonly HashSet<int> _consumedEventIds = [];
 
     public string ActorId { get; }
     public IReadOnlyList<MissionDefinition> Assigned { get; }
@@ -28,6 +29,44 @@ public sealed class MissionSession
     }
 
     public bool IsCompleted(string missionId) => _completed.Contains(missionId);
+
+    /// <summary>Applies an event already validated and recorded by the authoritative action owner.</summary>
+    public MissionAttempt ConsumeValidatedInfraction(InfractionEvent infraction)
+    {
+        ArgumentNullException.ThrowIfNull(infraction);
+        if (infraction.Sequence <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(infraction), "Event sequence must be positive.");
+        }
+        if (!StringComparer.Ordinal.Equals(infraction.ActorId, ActorId))
+        {
+            return new MissionAttempt(MissionActionStatus.WrongActor);
+        }
+        if (_consumedEventIds.Contains(infraction.Sequence))
+        {
+            return new MissionAttempt(MissionActionStatus.AlreadyCompleted);
+        }
+
+        MissionDefinition? matching = Assigned.FirstOrDefault(mission =>
+            (string.IsNullOrEmpty(infraction.MissionId) || mission.Id == infraction.MissionId) &&
+            mission.LocationId == infraction.LocationId &&
+            mission.InfractionCategory == infraction.Category &&
+            mission.OffenseActions.Contains(infraction.ActionId, StringComparer.Ordinal));
+        if (matching is null)
+        {
+            return new MissionAttempt(MissionActionStatus.UnknownMission);
+        }
+        if (_completed.Contains(matching.Id))
+        {
+            return new MissionAttempt(MissionActionStatus.AlreadyCompleted);
+        }
+
+        _consumedEventIds.Add(infraction.Sequence);
+        _completed.Add(matching.Id);
+        _events.Add(infraction);
+        CompletionPoints += matching.CompletionPoints;
+        return new MissionAttempt(MissionActionStatus.Completed, infraction, matching.Id);
+    }
 
     public MissionAttempt TryComplete(MissionAction action, InteractionValidation validation)
     {
@@ -77,6 +116,6 @@ public sealed class MissionSession
         _completed.Add(mission.Id);
         _events.Add(infraction);
         CompletionPoints += mission.CompletionPoints;
-        return new MissionAttempt(MissionActionStatus.Completed, infraction);
+        return new MissionAttempt(MissionActionStatus.Completed, infraction, mission.Id);
     }
 }

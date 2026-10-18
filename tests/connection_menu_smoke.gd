@@ -14,6 +14,8 @@ func _run() -> void:
 			role = "join"
 		if arg == "--ui-role=recover":
 			role = "recover"
+		if arg == "--ui-role=shutdown":
+			role = "shutdown"
 		if arg.begins_with("--ui-port="):
 			port = arg.substr(10)
 	var packed: PackedScene = load("res://scenes/gameplay/Main.tscn")
@@ -86,6 +88,27 @@ func _run() -> void:
 	if not connected or panel.visible:
 		_fail("Menu did not join a session and hide after spawning")
 		return
+	if role == "shutdown":
+		print("M04 shutdown client ready")
+		var disconnected := false
+		var disconnect_deadline := Time.get_ticks_msec() + 20000
+		while Time.get_ticks_msec() < disconnect_deadline:
+			await process_frame
+			if current_scene != main and current_scene != null:
+				disconnected = true
+				break
+		if not disconnected:
+			_fail("Server shutdown did not return the client to the connection menu")
+			return
+		await process_frame
+		await process_frame
+		var shutdown_panel: Control = current_scene.get_node("ConnectionMenu/Panel")
+		if not shutdown_panel.visible or not shutdown_panel.get_node("Layout/Status").text.contains("Server disconnected"):
+			_fail("Server shutdown did not show a recoverable disconnection status")
+			return
+		print("M04 server shutdown recovery passed: client returned to the connection menu.")
+		quit(0)
+		return
 	var tab := InputEventKey.new()
 	tab.keycode = KEY_TAB
 	tab.pressed = true
@@ -104,7 +127,27 @@ func _run() -> void:
 	if not returned or not current_scene.get_node("ConnectionMenu/Panel").visible:
 		_fail("Leave did not return to the connection menu")
 		return
-	print("M04 connection menu " + ("recovery" if tested_recovery else role) + " passed: port validation, connection, player spawn, and leave.")
+	if role == "join":
+		main = current_scene
+		panel = main.get_node("ConnectionMenu/Panel")
+		players = main.get_node("NetworkPlayers")
+		panel.get_node("Layout/Port").text = port
+		panel.get_node("Layout/Join").pressed.emit()
+		var reconnected := false
+		for frame in range(720):
+			await process_frame
+			if main.get_multiplayer().multiplayer_peer == null:
+				continue
+			var local_id: int = main.get_multiplayer().get_unique_id()
+			if local_id > 1 and players.has_node("Peer_" + str(local_id)):
+				reconnected = true
+				break
+		await process_frame
+		await process_frame
+		if not reconnected or panel.visible:
+			_fail("Joining again after leaving did not spawn a local player")
+			return
+	print("M04 connection menu " + ("recovery" if tested_recovery else role) + " passed: port validation, connection, player spawn, leave" + (", and reconnect" if role == "join" else "") + ".")
 	quit(0)
 
 

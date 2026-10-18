@@ -112,8 +112,8 @@ jobs:
           test ! -s "$logs/server.err"
           test ! -s "$logs/actor.err"
           test ! -s "$logs/observer.err"
-          grep -q 'Server infraction #2' "$logs/server.out"
-          if grep -q 'Server infraction #3' "$logs/server.out"; then exit 1; fi
+          grep -q 'Server infraction #3' "$logs/server.out"
+          if grep -q 'Server infraction #4' "$logs/server.out"; then exit 1; fi
           grep -q 'M04 actor smoke passed' "$logs/actor.out"
           grep -q 'M04 observer smoke passed' "$logs/observer.out"
           timeout 25s "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/connection_menu_smoke.gd -- --ui-role=join --ui-port=24569 >"$logs/ui-join.out" 2>"$logs/ui-join.err"
@@ -125,3 +125,15 @@ jobs:
           timeout 25s "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/connection_menu_smoke.gd -- --ui-role=recover --ui-port=24571 >"$logs/ui-recover.out" 2>"$logs/ui-recover.err"
           test ! -s "$logs/ui-recover.err"
           grep -q 'M04 connection menu recovery passed' "$logs/ui-recover.out"
+          timeout 35s "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/connection_menu_smoke.gd -- --ui-role=shutdown --ui-port=24569 >"$logs/ui-shutdown.out" 2>"$logs/ui-shutdown.err" &
+          shutdown_client=$!
+          shutdown_ready=0
+          for attempt in {1..50}; do
+            if grep -q 'M04 shutdown client ready' "$logs/ui-shutdown.out"; then shutdown_ready=1; break; fi
+            sleep 0.1
+          done
+          test "$shutdown_ready" -eq 1
+          kill "$server"
+          wait "$shutdown_client"
+          test ! -s "$logs/ui-shutdown.err"
+          grep -q 'M04 server shutdown recovery passed' "$logs/ui-shutdown.out"

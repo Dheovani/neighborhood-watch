@@ -39,10 +39,11 @@ public enum MissionActionStatus
     WrongLocation,
     WrongAction,
     TooFar,
-    Obstructed
+    Obstructed,
+    Depleted
 }
 
-public sealed record MissionAttempt(MissionActionStatus Status, InfractionEvent? Event = null)
+public sealed record MissionAttempt(MissionActionStatus Status, InfractionEvent? Event = null, string? MissionId = null)
 {
     public bool Succeeded => Status == MissionActionStatus.Completed;
 }
