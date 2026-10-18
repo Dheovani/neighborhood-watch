@@ -82,7 +82,10 @@ if ($LASTEXITCODE -ne 0) { throw 'Neighborhood smoke test failed.' }
 & $GodotPath --headless --path $projectRoot --script 'res://tests/mission_smoke.gd'
 if ($LASTEXITCODE -ne 0) { throw 'Mission smoke test failed.' }
 
-Write-Host 'Validation passed: build, domain checks, import, scene launch, movement, neighborhood, and mission smoke.'
+& (Join-Path $PSScriptRoot 'network-smoke.ps1') -GodotPath $GodotPath
+if ($LASTEXITCODE -ne 0) { throw 'Network smoke test failed.' }
+
+Write-Host 'Validation passed: build, domain checks, import, scene launch, movement, neighborhood, mission, and network smoke.'
 
 if ($Play) {
     & $GodotPath --path $projectRoot

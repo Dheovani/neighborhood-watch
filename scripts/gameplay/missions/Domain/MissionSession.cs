@@ -14,11 +14,16 @@ public sealed class MissionSession
     public int CompletionPoints { get; private set; }
 
     public MissionSession(string actorId, MissionCatalog catalog)
+        : this(actorId, catalog?.Definitions ?? throw new ArgumentNullException(nameof(catalog)))
+    {
+    }
+
+    public MissionSession(string actorId, IEnumerable<MissionDefinition> assigned)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(actorId);
-        ArgumentNullException.ThrowIfNull(catalog);
+        ArgumentNullException.ThrowIfNull(assigned);
         ActorId = actorId;
-        Assigned = catalog.Definitions;
+        Assigned = assigned.ToArray();
         _assigned = Assigned.ToDictionary(definition => definition.Id, StringComparer.Ordinal);
     }
 

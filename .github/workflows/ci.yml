@@ -81,3 +81,38 @@ jobs:
         run: '"$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/neighborhood_smoke.gd'
       - name: Test mission interactions
         run: '"$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/mission_smoke.gd'
+      - name: Test authoritative network session
+        shell: bash
+        run: |
+          set -euo pipefail
+          logs="$RUNNER_TEMP/network-smoke"
+          mkdir -p "$logs"
+          "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" -- --server --port=24569 >"$logs/server.out" 2>"$logs/server.err" &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in {1..50}; do
+            if grep -q 'Network server ready' "$logs/server.out"; then ready=1; break; fi
+            if ! kill -0 "$server" 2>/dev/null; then break; fi
+            sleep 0.1
+          done
+          test "$ready" -eq 1
+          timeout 25s "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/network_client_smoke.gd -- --connect=127.0.0.1 --port=24569 --smoke-role=actor >"$logs/actor.out" 2>"$logs/actor.err" &
+          actor=$!
+          joined=0
+          for attempt in {1..50}; do
+            if grep -q 'Server spawned peer' "$logs/server.out"; then joined=1; break; fi
+            sleep 0.1
+          done
+          test "$joined" -eq 1
+          timeout 25s "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/network_client_smoke.gd -- --connect=127.0.0.1 --port=24569 --smoke-role=observer >"$logs/observer.out" 2>"$logs/observer.err" &
+          observer=$!
+          wait "$actor"
+          wait "$observer"
+          test ! -s "$logs/server.err"
+          test ! -s "$logs/actor.err"
+          test ! -s "$logs/observer.err"
+          grep -q 'Server infraction #2' "$logs/server.out"
+          if grep -q 'Server infraction #3' "$logs/server.out"; then exit 1; fi
+          grep -q 'M04 actor smoke passed' "$logs/actor.out"
+          grep -q 'M04 observer smoke passed' "$logs/observer.out"

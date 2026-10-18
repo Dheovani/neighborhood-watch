@@ -24,6 +24,14 @@ public partial class MissionHud : CanvasLayer
             string.Join("\n", lines) + $"\nPoints: {session.CompletionPoints}";
     }
 
+    public void RenderNetwork(IReadOnlyList<MissionDefinition> assigned, IReadOnlySet<string> completed, int points)
+    {
+        string[] lines = assigned.Select(mission =>
+            $"{(completed.Contains(mission.Id) ? "[x]" : "[ ]")} {mission.Title}").ToArray();
+        _tasks.Text = $"MISSIONS  {completed.Count}/{assigned.Count}\n" +
+            string.Join("\n", lines) + $"\nPoints: {points}";
+    }
+
     public void SetPrompt(string text) => _prompt.Text = text;
 
     public void SetFeedback(string text) => _feedback.Text = text;

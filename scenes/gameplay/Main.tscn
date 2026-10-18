@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/characters/Player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/environments/Neighborhood.tscn" id="2_neighborhood"]
 [ext_resource type="PackedScene" path="res://scenes/gameplay/MissionSpots.tscn" id="3_spots"]
 [ext_resource type="PackedScene" path="res://scenes/ui/MissionHud.tscn" id="4_hud"]
 [ext_resource type="Script" path="res://scripts/gameplay/missions/LocalMissionController.cs" id="5_missions"]
+[ext_resource type="Script" path="res://scripts/networking/NetworkSession.cs" id="6_network"]
 
 [sub_resource type="Environment" id="Environment_sky"]
 background_mode = 2
@@ -34,3 +35,8 @@ position = Vector3(-8, 0.05, 9)
 
 [node name="MissionRuntime" type="Node" parent="."]
 script = ExtResource("5_missions")
+
+[node name="NetworkPlayers" type="Node3D" parent="."]
+
+[node name="NetworkSession" type="Node" parent="."]
+script = ExtResource("6_network")
