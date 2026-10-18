@@ -116,3 +116,12 @@ jobs:
           if grep -q 'Server infraction #3' "$logs/server.out"; then exit 1; fi
           grep -q 'M04 actor smoke passed' "$logs/actor.out"
           grep -q 'M04 observer smoke passed' "$logs/observer.out"
+          timeout 25s "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/connection_menu_smoke.gd -- --ui-role=join --ui-port=24569 >"$logs/ui-join.out" 2>"$logs/ui-join.err"
+          test ! -s "$logs/ui-join.err"
+          grep -q 'M04 connection menu join passed' "$logs/ui-join.out"
+          timeout 25s "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/connection_menu_smoke.gd -- --ui-role=host --ui-port=24570 >"$logs/ui-host.out" 2>"$logs/ui-host.err"
+          test ! -s "$logs/ui-host.err"
+          grep -q 'M04 connection menu host passed' "$logs/ui-host.out"
+          timeout 25s "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/connection_menu_smoke.gd -- --ui-role=recover --ui-port=24571 >"$logs/ui-recover.out" 2>"$logs/ui-recover.err"
+          test ! -s "$logs/ui-recover.err"
+          grep -q 'M04 connection menu recovery passed' "$logs/ui-recover.out"

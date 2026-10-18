@@ -61,7 +61,17 @@ try {
     if ($serverOutput -match 'Server infraction #3') {
         throw 'Repeated use of a one-time spot created a duplicate infraction.'
     }
-    Write-Host 'M04 network smoke passed: two clients, server movement, validated and rejected actions, spontaneous infraction, shared state, duplicate protection.'
+    $uiJoin = Start-HiddenGodot 'ui-join' @('--headless', '--path', $projectRoot, '--script', 'res://tests/connection_menu_smoke.gd', '--', '--ui-role=join', "--ui-port=$port")
+    if (-not $uiJoin.WaitForExit(20000)) { throw 'Menu join test did not finish within 20 seconds.' }
+    Assert-Output 'ui-join' 'M04 connection menu join passed'
+
+    $uiHost = Start-HiddenGodot 'ui-host' @('--headless', '--path', $projectRoot, '--script', 'res://tests/connection_menu_smoke.gd', '--', '--ui-role=host', "--ui-port=$($port + 1)")
+    if (-not $uiHost.WaitForExit(20000)) { throw 'Menu host test did not finish within 20 seconds.' }
+    Assert-Output 'ui-host' 'M04 connection menu host passed'
+    $uiRecover = Start-HiddenGodot 'ui-recover' @('--headless', '--path', $projectRoot, '--script', 'res://tests/connection_menu_smoke.gd', '--', '--ui-role=recover', "--ui-port=$($port + 2)")
+    if (-not $uiRecover.WaitForExit(20000)) { throw 'Menu recovery test did not finish within 20 seconds.' }
+    Assert-Output 'ui-recover' 'M04 connection menu recovery passed'
+    Write-Host 'M04 network smoke passed: two clients, validated actions, shared state, and host/join/failure recovery.'
 }
 finally {
     foreach ($process in $processes) {

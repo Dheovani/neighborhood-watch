@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ConnectionMenu.cs" id="1_menu"]
+
+[node name="ConnectionMenu" type="CanvasLayer"]
+layer = 2
+script = ExtResource("1_menu")
+
+[node name="Panel" type="PanelContainer" parent="."]
+offset_left = 20.0
+offset_top = 100.0
+offset_right = 330.0
+offset_bottom = 360.0
+
+[node name="Layout" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Panel/Layout"]
+layout_mode = 2
+text = "NEIGHBORHOOD WATCH"
+
+[node name="Status" type="Label" parent="Panel/Layout"]
+layout_mode = 2
+text = "Offline. Choose how to play."
+autowrap_mode = 2
+
+[node name="Address" type="LineEdit" parent="Panel/Layout"]
+layout_mode = 2
+text = "127.0.0.1"
+placeholder_text = "Server address"
+
+[node name="Port" type="LineEdit" parent="Panel/Layout"]
+layout_mode = 2
+text = "24567"
+placeholder_text = "UDP port"
+
+[node name="Host" type="Button" parent="Panel/Layout"]
+layout_mode = 2
+text = "Host locally"
+
+[node name="Join" type="Button" parent="Panel/Layout"]
+layout_mode = 2
+text = "Join server"
+
+[node name="Offline" type="Button" parent="Panel/Layout"]
+layout_mode = 2
+text = "Play offline"
+
+[node name="Leave" type="Button" parent="Panel/Layout"]
+visible = false
+layout_mode = 2
+text = "Leave session"
+
+[node name="Hint" type="Label" parent="Panel/Layout"]
+layout_mode = 2
+text = "Tab: show or hide this menu"

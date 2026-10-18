@@ -1,4 +1,6 @@
-# Neighborhood Watch
+![neighborhood-watch](./neighborhood-watch-logo.svg)
+
+## Brief
 
 Neighborhood Watch is a planned 3D multiplayer social stealth game set in an ordinary U.S. neighborhood with houses and gardens, some shops, a gas station, and a park. The setting does not associate income level with wrongdoing. Players complete missions through minor reportable infractions, ranging from petty crimes to rude behavior, while watching and reporting neighbors who do the same. A player may refuse a mission's infraction, but then does not complete that mission or receive its points. The intended tone is silly and friendly, without grave crime or severe violence. **M04 currently implements a development multiplayer slice.** Reporting and match rules remain proposals.
 
@@ -24,7 +26,9 @@ From PowerShell in the project root:
 
 The first command validates; the second repeats validation and opens the game for a visual playtest. An explicit `-GodotPath` takes priority; otherwise the script checks `tools/godot/`, `GODOT_EXE`, its temporary cache, PATH, and the named Downloads ZIP. It restores packages from Godot's bundled NuGet feed when available, builds C#, runs dependency-free .NET mission rule checks, imports scenes, launches the main scene headlessly, and checks movement, neighborhood routes, missions, and one server with two network clients. To build only, run `dotnet build NeighborhoodWatch.csproj`. On first restore without the bundled packages, NuGet network access may be needed.
 
-For a visible local network session, use three PowerShell terminals:
+The game now opens a small connection menu by default. Choose **Play offline**, **Host locally**, or **Join server**. A local host starts a separate headless Godot server and joins it automatically. A second game window can join at `127.0.0.1` on UDP port `24567`. Press **Tab** to reopen the menu and leave a session. A failed connection returns to the menu after a five-second timeout. The address and port fields are development controls, not a matchmaking service.
+
+The command-line flow remains available for repeatable development sessions. Use three PowerShell terminals:
 
 ```powershell
 .\scripts\dev\run-network.ps1 -Server
@@ -32,7 +36,7 @@ For a visible local network session, use three PowerShell terminals:
 .\scripts\dev\run-network.ps1
 ```
 
-Run one command per terminal, in the order shown. The script finds the local Godot 4.7.2 .NET executable or accepts `-GodotPath` or `GODOT_EXE`. The server is headless; the two clients open separate visible windows. Offline play still launches without network arguments. The network mode currently starts players near the park.
+Run one command per terminal, in the order shown. The script finds the local Godot 4.7.2 .NET executable or accepts `-GodotPath` or `GODOT_EXE`. The server is headless; the two clients open separate visible windows. The network mode currently starts players near the park.
 
 Open this folder in VS Code. Edit C# and text scene files there; Godot's editor is only needed to inspect scene composition or test the controls visually.
 
@@ -52,6 +56,7 @@ Dependabot checks GitHub Actions and NuGet weekly. `Godot.NET.Sdk` updates are e
 | Escape | Release or capture mouse |
 | Left click | Recapture mouse |
 | E | Commit the prompted infraction at a mission location |
+| Tab | Show or hide the connection menu |
 
 The scene has a capsule player, ground collision, lighting, a following camera, and a placeholder neighborhood with five houses, a market, a gas station, and a park. Prototype missions let the player litter in the park, read a neighbor's mail, or take an unpaid snack from a market display. Walking away completes nothing. Each successful action records one local infraction event and awards the mission's points once. Building interiors are closed.
 
@@ -77,4 +82,4 @@ The scene has a capsule player, ground collision, lighting, a following camera, 
 
 ## Current limits
 
-The network slice uses command-line connection and immediate exterior interactions. It has server-owned movement and mission validation, one unassigned sample infraction, and a replicated park paper state. It has no prediction, gameplay-relevant world systems, multi-step actions, player-facing lobby, evidence, reports, or match results. Remote movement is interpolated; local movement can feel rough under latency. The visual relevance gate is provisional and does not count as evidence. Mission points are prototype completion rewards, not final Score Attack scoring. M04 still requires a visible multi-client playtest and simulated latency tests.
+The network slice offers a development connection menu and immediate exterior interactions. Local hosting was confirmed in a visible playtest on 2026-10-18. It has server-owned movement and mission validation, one unassigned sample infraction, and a replicated park paper state. It has no prediction, gameplay-relevant world systems, multi-step actions, matchmaking lobby, evidence, reports, or match results. Remote movement is interpolated; local movement can feel rough under latency. The visual relevance gate is provisional and does not count as evidence. Mission points are prototype completion rewards, not final Score Attack scoring. M04 still requires a visible multi-client playtest and simulated latency tests.

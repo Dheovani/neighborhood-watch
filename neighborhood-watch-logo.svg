@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">Neighborhood Watch</title>
+  <desc id="desc">Minimalist gold eye emblem, Neighborhood Watch title and Everyone is watching. Nobody is innocent. tagline on a dark navy background.</desc>
+  <rect width="1200" height="320" rx="22" fill="#162d3f"/>
+  <g transform="translate(600 54)" fill="none" stroke="#efb65b" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-19 0 Q0 -19 19 0 Q0 19 -19 0Z"/>
+    <circle r="6"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <text x="600" y="143" fill="#f8e9d2" font-size="43" font-weight="700" letter-spacing="1.5">NEIGHBORHOOD</text>
+    <text x="600" y="207" fill="#efb65b" font-size="43" font-weight="700" letter-spacing="1.5">WATCH</text>
+    <text x="600" y="257" fill="#f8e9d2" font-size="19" font-weight="400" letter-spacing="0.4">EVERYONE IS WATCHING. NOBODY IS INNOCENT.</text>
+  </g>
+</svg>

@@ -9,6 +9,7 @@ public partial class PlayerController : CharacterBody3D
     [Export] public float JumpSpeed { get; set; } = 4.5f;
     [Export] public float MouseSensitivity { get; set; } = 0.12f;
     public bool IsLocallyControlled { get; set; } = true;
+    public bool InputEnabled { get; set; } = true;
     public bool ExternalMovement { get; set; }
     public float LookYaw => _cameraYaw.Rotation.Y;
 
@@ -29,7 +30,7 @@ public partial class PlayerController : CharacterBody3D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (!IsLocallyControlled)
+        if (!IsLocallyControlled || !InputEnabled)
         {
             return;
         }
@@ -66,7 +67,7 @@ public partial class PlayerController : CharacterBody3D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (ExternalMovement)
+        if (ExternalMovement || !InputEnabled)
         {
             return;
         }
