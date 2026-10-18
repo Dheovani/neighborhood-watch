@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Godot;
 using NeighborhoodWatch.Characters;
 using NeighborhoodWatch.Gameplay.Missions;
@@ -21,6 +22,14 @@ public partial class NetworkSession : Node
     private readonly HashSet<string> _localCompleted = new(StringComparer.Ordinal);
     private readonly List<InfractionEvent> _serverInfractions = [];
     private ENetMultiplayerPeer? _peer;
+    private Process? _localServerProcess;
+    private volatile bool _localServerReady;
+    private ulong _localServerStartMs;
+    private int _localServerPort;
+    private ulong _connectionStartMs;
+    private bool _connected;
+    private bool _startedFromCommandLine;
+    private bool _endingSession;
     private PackedScene _playerScene = null!;
     private Node3D _playersRoot = null!;
     private MissionHud _hud = null!;
@@ -32,6 +41,11 @@ public partial class NetworkSession : Node
     private int _snapshotCounter;
     private int _nextInfractionId;
     private long _tick;
+    private static string? _pendingNotice;
+    public bool IsNetworked => _networked;
+    public bool HasLocalPlayer => _connected && !_server && _clientActors.ContainsKey(Multiplayer.GetUniqueId());
+    public bool IsStartingLocalHost => _localServerProcess is not null && !_networked;
+    public string SessionStatus { get; private set; } = "Offline. Choose how to play.";
 
     private sealed class ServerActor(PlayerController player, MissionSession mission)
     {
@@ -46,9 +60,15 @@ public partial class NetworkSession : Node
 
     public override void _Ready()
     {
+        if (_pendingNotice is not null)
+        {
+            SessionStatus = _pendingNotice;
+            _pendingNotice = null;
+        }
         string[] args = OS.GetCmdlineUserArgs();
         bool startServer = args.Contains("--server", StringComparer.Ordinal);
         string? connectArg = args.FirstOrDefault(arg => arg.StartsWith("--connect=", StringComparison.Ordinal));
+        _startedFromCommandLine = startServer || connectArg is not null;
         if (!startServer && connectArg is null)
         {
             SetPhysicsProcess(false);
@@ -71,8 +91,103 @@ public partial class NetworkSession : Node
             return;
         }
 
+        if (!StartNetwork(startServer, connectArg is null ? "" : connectArg[10..], port))
+        {
+            GD.PushError(SessionStatus);
+            GetTree().Quit(1);
+        }
+    }
+
+    public void SetLocalStatus(string status) => SessionStatus = status;
+
+    public bool StartClient(string address, int port)
+    {
+        if (string.IsNullOrWhiteSpace(address) || address.Contains(' ') || port is < 1024 or > 65535)
+        {
+            SessionStatus = "Enter a server address and a UDP port from 1024 to 65535.";
+            return false;
+        }
+        return StartNetwork(false, address, port);
+    }
+
+    public bool StartLocalHost(int port)
+    {
+        if (_networked || _localServerProcess is not null || port is < 1024 or > 65535)
+        {
+            return false;
+        }
+
+        try
+        {
+            ProcessStartInfo start = new(OS.GetExecutablePath())
+            {
+                WorkingDirectory = ProjectSettings.GlobalizePath("res://"),
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+            foreach (string argument in new[] { "--headless", "--path", start.WorkingDirectory, "--", "--server", $"--port={port}" })
+            {
+                start.ArgumentList.Add(argument);
+            }
+            _localServerReady = false;
+            _localServerProcess = new Process { StartInfo = start };
+            _localServerProcess.OutputDataReceived += (_, args) =>
+            {
+                if (args.Data?.Contains("Network server ready", StringComparison.Ordinal) == true)
+                {
+                    _localServerReady = true;
+                }
+            };
+            _localServerProcess.Start();
+            _localServerProcess.BeginOutputReadLine();
+            _localServerProcess.BeginErrorReadLine();
+            _localServerStartMs = Time.GetTicksMsec();
+            _localServerPort = port;
+            SessionStatus = $"Starting local server on UDP {port}...";
+            SetProcess(true);
+            return true;
+        }
+        catch (Exception error)
+        {
+            StopLocalServer();
+            SessionStatus = $"Local server could not start: {error.Message}";
+            return false;
+        }
+    }
+
+    public void LeaveSession()
+    {
+        if (!_networked && _localServerProcess is null)
+        {
+            return;
+        }
+        GetTree().ReloadCurrentScene();
+    }
+
+    private bool StartNetwork(bool startServer, string address, int port)
+    {
+        if (_networked)
+        {
+            SessionStatus = "Already connected to a session.";
+            return false;
+        }
+
+        ENetMultiplayerPeer peer = new();
+        Error error = startServer ? peer.CreateServer(port, MaxClients) : peer.CreateClient(address, port);
+        if (error != Error.Ok)
+        {
+            SessionStatus = $"ENet startup failed: {error}";
+            peer.Close();
+            return false;
+        }
+
+        _peer = peer;
         _networked = true;
         _server = startServer;
+        _connected = startServer;
+        _connectionStartMs = Time.GetTicksMsec();
         _playerScene = GD.Load<PackedScene>("res://scenes/characters/Player.tscn");
         _catalog = MissionCatalog.FromJson(Godot.FileAccess.GetFileAsString("res://resources/missions/initial.json"));
         _clientAssigned = _catalog.Definitions;
@@ -88,22 +203,14 @@ public partial class NetworkSession : Node
         Multiplayer.ConnectionFailed += OnConnectionFailed;
         Multiplayer.ServerDisconnected += OnServerDisconnected;
 
-        _peer = new ENetMultiplayerPeer();
-        Error error = startServer
-            ? _peer.CreateServer(port, MaxClients)
-            : _peer.CreateClient(connectArg![10..], port);
-        if (error != Error.Ok)
-        {
-            GD.PushError($"ENet startup failed: {error}");
-            SetPhysicsProcess(false);
-            return;
-        }
-
         Multiplayer.MultiplayerPeer = _peer;
         _hud.SetPrompt("");
-        _hud.SetFeedback(startServer ? $"Server listening on UDP {port}" : $"Connecting to {connectArg![10..]}:{port}");
+        SessionStatus = startServer ? $"Server listening on UDP {port}" : $"Connecting to {address}:{port}";
+        _hud.SetFeedback(SessionStatus);
         _hud.RenderNetwork(_clientAssigned, _localCompleted, 0);
-        GD.Print(startServer ? $"Network server ready on UDP {port}" : $"Network client connecting to {connectArg![10..]}:{port}");
+        GD.Print(startServer ? $"Network server ready on UDP {port}" : $"Network client connecting to {address}:{port}");
+        SetPhysicsProcess(true);
+        return true;
     }
 
     public override void _ExitTree()
@@ -113,6 +220,28 @@ public partial class NetworkSession : Node
             Multiplayer.MultiplayerPeer = null;
             _peer?.Close();
         }
+        StopLocalServer();
+    }
+
+    private void StopLocalServer()
+    {
+        if (_localServerProcess is null)
+        {
+            return;
+        }
+        try
+        {
+            if (!_localServerProcess.HasExited)
+            {
+                _localServerProcess.Kill();
+            }
+        }
+        catch (InvalidOperationException)
+        {
+            // Process.Start may fail before a process ID exists.
+        }
+        _localServerProcess.Dispose();
+        _localServerProcess = null;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -186,8 +315,16 @@ public partial class NetworkSession : Node
             return;
         }
 
-        Vector2 input = Input.GetVector("move_left", "move_right", "move_forward", "move_back");
-        RpcId(1, MethodName.SubmitMovement, input, Input.IsActionJustPressed("jump"), localPlayer.LookYaw);
+        Vector2 input = localPlayer.InputEnabled
+            ? Input.GetVector("move_left", "move_right", "move_forward", "move_back")
+            : Vector2.Zero;
+        RpcId(1, MethodName.SubmitMovement, input, localPlayer.InputEnabled && Input.IsActionJustPressed("jump"), localPlayer.LookYaw);
+
+        if (!localPlayer.InputEnabled)
+        {
+            _hud.SetPrompt("");
+            return;
+        }
 
         MissionSpot? nearest = _spots
             .Where(spot => localPlayer.GlobalPosition.DistanceTo(spot.GlobalPosition) <= spot.InteractionDistance)
@@ -203,6 +340,26 @@ public partial class NetworkSession : Node
 
     public override void _Process(double delta)
     {
+        if (_networked && !_server && !_connected && Time.GetTicksMsec() - _connectionStartMs > 5000)
+        {
+            HandleConnectionEnd("Connection timed out after 5 seconds. Choose Host or Join to retry.");
+            SetProcess(false);
+            return;
+        }
+
+        if (IsStartingLocalHost)
+        {
+            if (_localServerProcess!.HasExited || Time.GetTicksMsec() - _localServerStartMs > 10000)
+            {
+                StopLocalServer();
+                SessionStatus = "Local server did not become ready within 10 seconds.";
+            }
+            else if (_localServerReady && !StartClient("127.0.0.1", _localServerPort))
+            {
+                StopLocalServer();
+            }
+        }
+
         if (!_networked || _server)
         {
             return;
@@ -223,22 +380,37 @@ public partial class NetworkSession : Node
 
     private void OnConnectedToServer()
     {
+        _connected = true;
+        SessionStatus = $"Connected as peer {Multiplayer.GetUniqueId()}";
         _hud.SetFeedback("Connected. Waiting for player spawn.");
         GD.Print($"Connected as peer {Multiplayer.GetUniqueId()}");
     }
 
-    private void OnConnectionFailed() => _hud.SetFeedback("Connection failed.");
+    private void OnConnectionFailed()
+    {
+        HandleConnectionEnd("Connection failed. Choose Host or Join to try again.");
+    }
 
     private void OnServerDisconnected()
     {
-        _hud.SetFeedback("Server disconnected.");
-        SetPhysicsProcess(false);
-        foreach (PlayerController player in _clientActors.Values)
+        HandleConnectionEnd("Server disconnected. Choose Host or Join to play again.");
+    }
+
+    private void HandleConnectionEnd(string reason)
+    {
+        if (_endingSession)
         {
-            player.QueueFree();
+            return;
         }
-        _clientActors.Clear();
-        _clientTargets.Clear();
+        _endingSession = true;
+        if (_startedFromCommandLine)
+        {
+            GD.PushError(reason);
+            GetTree().Quit(1);
+            return;
+        }
+        _pendingNotice = reason;
+        GetTree().CallDeferred(SceneTree.MethodName.ReloadCurrentScene);
     }
 
     private void OnPeerConnected(long peerId)

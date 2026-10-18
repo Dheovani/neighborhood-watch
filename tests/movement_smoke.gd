@@ -13,6 +13,7 @@ func _run() -> void:
 
 	var main: Node3D = scene.instantiate()
 	root.add_child(main)
+	main.get_node("ConnectionMenu/Panel/Layout/Offline").pressed.emit()
 	var player: CharacterBody3D = main.get_node("Player")
 	var camera: Camera3D = player.get_node("CameraYaw/CameraPitch/SpringArm3D/Camera3D")
 	await physics_frame

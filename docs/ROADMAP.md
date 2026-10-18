@@ -128,7 +128,7 @@ Estimates below are planning ranges for one developer working roughly six focuse
 
 ## M04 — Authoritative multiplayer foundation
 
-**State:** Approved to begin by the player on 2026-10-17. An initial authoritative network slice is implemented; M04 remains in progress. **Original estimate:** 8–12 development days.
+**State:** Approved to begin by the player on 2026-10-17. An initial authoritative network slice is implemented; the player confirmed local menu hosting works in a visible playtest on 2026-10-18. M04 remains in progress. **Original estimate:** 8–12 development days.
 
 ### Decide authority and session behavior
 
@@ -142,7 +142,7 @@ Estimates below are planning ranges for one developer working roughly six focuse
 ### Implement the session
 
 - [x] Add a dedicated server launch command that works without a graphical window.
-- [ ] Add minimal host, join, and connection status UI for local development.
+- [x] Add a development host, join, leave, and connection status menu backed by the dedicated server path.
 - [x] Assign and validate one peer identity per connected player on the server.
 - [x] Spawn one player scene per connected peer and remove it after disconnect.
 - [x] Move authoritative player positions and essential motion state to the server.
@@ -162,6 +162,8 @@ Estimates below are planning ranges for one developer working roughly six focuse
 - [ ] Verify both clients see each other move and can complete their own assigned missions.
 - [x] Verify distant and unknown-target requests cannot award progress or create an infraction event.
 - [ ] Test join, leave, reconnect, and server shutdown behavior.
+- [x] Smoke-test menu hosting, joining, leaving, and recovery after a connection attempt times out.
+- [x] Visually confirm the local Host button starts a playable session.
 - [ ] Test playability under a documented simulated latency and packet-loss setting.
 - [ ] Record the chosen synchronization method, known latency limits, and message ownership rules.
 - [x] Run automated rule tests, scene startup checks, and a two-client network smoke test after networking changes.
