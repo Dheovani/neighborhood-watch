@@ -56,9 +56,9 @@ try {
     }
     Assert-Output 'actor' 'M04 actor smoke passed'
     Assert-Output 'observer' 'M04 observer smoke passed'
-    Assert-Output 'server' 'Server infraction #2'
+    Assert-Output 'server' 'Server infraction #3'
     $serverOutput = Get-Content -LiteralPath (Join-Path $logRoot 'server.out') -Raw
-    if ($serverOutput -match 'Server infraction #3') {
+    if ($serverOutput -match 'Server infraction #4') {
         throw 'Repeated use of a one-time spot created a duplicate infraction.'
     }
     $uiJoin = Start-HiddenGodot 'ui-join' @('--headless', '--path', $projectRoot, '--script', 'res://tests/connection_menu_smoke.gd', '--', '--ui-role=join', "--ui-port=$port")
@@ -71,7 +71,21 @@ try {
     $uiRecover = Start-HiddenGodot 'ui-recover' @('--headless', '--path', $projectRoot, '--script', 'res://tests/connection_menu_smoke.gd', '--', '--ui-role=recover', "--ui-port=$($port + 2)")
     if (-not $uiRecover.WaitForExit(20000)) { throw 'Menu recovery test did not finish within 20 seconds.' }
     Assert-Output 'ui-recover' 'M04 connection menu recovery passed'
-    Write-Host 'M04 network smoke passed: two clients, validated actions, shared state, and host/join/failure recovery.'
+
+    $uiShutdown = Start-HiddenGodot 'ui-shutdown' @('--headless', '--path', $projectRoot, '--script', 'res://tests/connection_menu_smoke.gd', '--', '--ui-role=shutdown', "--ui-port=$port")
+    $shutdownReady = $false
+    for ($attempt = 0; $attempt -lt 50; $attempt++) {
+        Start-Sleep -Milliseconds 100
+        if (Select-String -LiteralPath (Join-Path $logRoot 'ui-shutdown.out') -Pattern 'M04 shutdown client ready' -Quiet) {
+            $shutdownReady = $true
+            break
+        }
+    }
+    if (-not $shutdownReady) { throw 'Shutdown client did not join within 5 seconds.' }
+    Stop-Process -Id $server.Id -Force
+    if (-not $uiShutdown.WaitForExit(30000)) { throw 'Shutdown client did not recover within 30 seconds.' }
+    Assert-Output 'ui-shutdown' 'M04 server shutdown recovery passed'
+    Write-Host 'M04 network smoke passed: two mission completions, spontaneous actions, shared stock, reconnect, and server shutdown recovery.'
 }
 finally {
     foreach ($process in $processes) {

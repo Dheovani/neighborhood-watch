@@ -132,8 +132,8 @@ Estimates below are planning ranges for one developer working roughly six focuse
 
 ### Decide authority and session behavior
 
-- [ ] Document client intents, server-owned state, replicated state, and rejection reasons for each M03 interaction.
-- [ ] Select a small set of shared world actions that can create infractions without a mission, then make mission progress consume those validated events as specified in `docs/design/MISSIONS_AND_INFRACTIONS.md`.
+- [x] Document client intents, server-owned state, replicated state, and rejection reasons for each M03 interaction.
+- [x] Let the three sample actions record server-owned infractions without an assignment; grant mission progress by consuming the validated event when its action, category, and location match.
 - [x] Demonstrate one unassigned park action that records an infraction without advancing mission progress.
 - [ ] Decide a movement synchronization method after a local latency test; document any prediction or interpolation added.
 - [x] Set a development-only connection flow using Godot high-level multiplayer, ENet, and a headless server.
@@ -153,20 +153,23 @@ Estimates below are planning ranges for one developer working roughly six focuse
 - [x] Accept sample interaction requests as intents and validate sender, target, distance, line of sight, and repeat use on the server.
 - [x] Send confirmed sample outcomes back to the requesting client and keep progress unchanged after rejection.
 - [x] Remove a disconnected player's scene and session without leaving the server in an invalid state.
-- [ ] Apply and replicate durable shared world effects from validated actions, including actions performed without a mission.
+- [x] Apply and replicate initial durable shared effects: park litter and finite market stock, including uses without an assigned mission.
 - [x] Replicate a placeholder park paper state and spot use count after validated actions, including an unassigned action.
 
 ### Validate and document
 
 - [x] Run one headless server and two local clients from a repeatable local script and CI job.
-- [ ] Verify both clients see each other move and can complete their own assigned missions.
+- [x] Verify in a two-client headless smoke that remote movement replicates and each client completes an assigned mission.
+- [ ] Visually verify both clients see each other move and can complete their own assigned missions.
 - [x] Verify distant and unknown-target requests cannot award progress or create an infraction event.
-- [ ] Test join, leave, reconnect, and server shutdown behavior.
+- [x] Test join, leave, and reconnect against the same dedicated server.
+- [x] Test client recovery after dedicated server shutdown.
 - [x] Smoke-test menu hosting, joining, leaving, and recovery after a connection attempt times out.
 - [x] Visually confirm the local Host button starts a playable session.
 - [ ] Test playability under a documented simulated latency and packet-loss setting.
 - [ ] Record the chosen synchronization method, known latency limits, and message ownership rules.
 - [x] Run automated rule tests, scene startup checks, and a two-client network smoke test after networking changes.
+- [ ] At the M04 acceptance review, decide whether to purchase the neighborhood mesh pack; if purchased, test a small Godot 4.7.2 import before building M05 visibility rules against final geometry.
 
 **Acceptance:** The headless server owns and validates player, mission, and offense state. Multiple clients share one match without trusting a client's claim of completion. Accounts, matchmaking, and external services remain out of scope.
 

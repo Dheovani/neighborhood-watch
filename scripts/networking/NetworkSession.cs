@@ -330,7 +330,10 @@ public partial class NetworkSession : Node
             .Where(spot => localPlayer.GlobalPosition.DistanceTo(spot.GlobalPosition) <= spot.InteractionDistance)
             .OrderBy(spot => localPlayer.GlobalPosition.DistanceTo(spot.GlobalPosition))
             .FirstOrDefault();
-        MissionDefinition? assigned = nearest is null ? null : _clientAssigned.FirstOrDefault(definition => definition.Id == nearest.MissionId);
+        MissionDefinition? assigned = nearest is null ? null : _clientAssigned.FirstOrDefault(definition =>
+            definition.LocationId == nearest.LocationId &&
+            definition.InfractionCategory == nearest.InfractionCategory &&
+            definition.OffenseActions.Contains(nearest.ActionId, StringComparer.Ordinal));
         _hud.SetPrompt(nearest is null ? "" : $"E: {assigned?.Instruction ?? nearest.ActionLabel}");
         if (nearest is not null && Input.IsActionJustPressed("interact"))
         {
@@ -628,19 +631,26 @@ public partial class NetworkSession : Node
             return;
         }
 
-        MissionAction action = new(peerId.ToString(), spot.MissionId, spot.LocationId, spot.ActionId, _tick);
-        MissionAttempt outcome = actor.Mission.TryComplete(action, new InteractionValidation(distance, spot.InteractionDistance, true));
-        // The server journal owns the action record; the M03 session only grants mission progress.
+        if (spot.IsDepleted)
+        {
+            actor.UsedSpots.Remove(spotName);
+            RpcId(peerId, MethodName.InteractionResult, string.Empty,
+                (int)MissionActionStatus.Depleted, actor.Mission.CompletedCount, actor.Mission.CompletionPoints, 0);
+            return;
+        }
+
         int eventId = ++_nextInfractionId;
+        InfractionEvent infraction = new(
+            eventId, peerId.ToString(), string.Empty, spot.InfractionCategory,
+            spot.LocationId, spot.ActionId, _tick);
+        _serverInfractions.Add(infraction);
+        MissionAttempt outcome = actor.Mission.ConsumeValidatedInfraction(infraction);
         int count = _spotUses.GetValueOrDefault(spotName) + 1;
         _spotUses[spotName] = count;
         spot.SetUseCount(count);
-        string category = _catalog.Definitions.First(definition => definition.Id == spot.MissionId).InfractionCategory;
-        _serverInfractions.Add(new InfractionEvent(
-            eventId, peerId.ToString(), outcome.Succeeded ? spot.MissionId : string.Empty,
-            category, spot.LocationId, spot.ActionId, _tick));
         GD.Print($"Server infraction #{eventId}: peer {peerId}, {spot.ActionId}, mission {outcome.Status}");
-        RpcId(peerId, MethodName.InteractionResult, spot.MissionId, (int)outcome.Status, actor.Mission.CompletedCount, actor.Mission.CompletionPoints, eventId);
+        RpcId(peerId, MethodName.InteractionResult, outcome.MissionId ?? string.Empty,
+            (int)outcome.Status, actor.Mission.CompletedCount, actor.Mission.CompletionPoints, eventId);
     }
 
     private static bool HasLineOfSight(PlayerController player, MissionSpot spot)

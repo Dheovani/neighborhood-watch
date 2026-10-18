@@ -122,7 +122,38 @@ func _run() -> void:
 		if not state_label.text.contains("(2)"):
 			_fail("Second validated action did not update shared park state")
 			return
-		print("M04 observer smoke passed: remote movement, invalid targets, and spontaneous infraction.")
+		Input.action_press("move_left")
+		for frame in range(24):
+			await physics_frame
+		Input.action_release("move_left")
+		var market: Node3D = main.get_node("MissionSpots/MarketSnack")
+		Input.action_press("move_forward")
+		var reached_market := false
+		for frame in range(650):
+			await physics_frame
+			if player.global_position.distance_to(market.global_position) <= 2.3:
+				reached_market = true
+				break
+		Input.action_release("move_forward")
+		if not reached_market:
+			_fail("Second player could not reach the market using server-owned movement")
+			return
+		session.rpc_id(1, "SubmitInteraction", "MarketSnack")
+		if not await _wait_for_text(feedback, "Mission completed", 120):
+			_fail("Second player could not complete an assigned market mission")
+			return
+		if not tasks.text.contains("1/2"):
+			_fail("Second player's mission progress was not updated")
+			return
+		var stock_label: Label3D = market.get_node("SnackLabel")
+		for frame in range(60):
+			await physics_frame
+			if stock_label.text.contains("7 left"):
+				break
+		if not stock_label.text.contains("7 left"):
+			_fail("Server-owned market stock was not replicated after use")
+			return
+		print("M04 observer smoke passed: remote movement, spontaneous infraction, own mission, and shared stock.")
 	quit(0)
 
 

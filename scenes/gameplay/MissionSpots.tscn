@@ -40,6 +40,7 @@ script = ExtResource("1_spot")
 MissionId = "park_litter"
 LocationId = "park_path"
 ActionId = "drop_paper"
+InfractionCategory = "incivility"
 ActionLabel = "Drop paper on the path"
 EffectNodePath = "Paper"
 
@@ -74,6 +75,7 @@ script = ExtResource("1_spot")
 MissionId = "neighbor_mail"
 LocationId = "north_house_mailbox"
 ActionId = "read_mail"
+InfractionCategory = "privacy_intrusion"
 ActionLabel = "Read your neighbor's mail"
 
 [node name="Mailbox" type="StaticBody3D" parent="NeighborMail"]
@@ -106,7 +108,11 @@ script = ExtResource("1_spot")
 MissionId = "market_snack"
 LocationId = "market_display"
 ActionId = "take_unpaid_snack"
+InfractionCategory = "petty_theft"
 ActionLabel = "Take a snack without paying"
+MaxUses = 8
+EffectNodePath = "Display/Snack"
+HideEffectWhenDepleted = true
 
 [node name="Display" type="StaticBody3D" parent="MarketSnack"]
 

@@ -52,6 +52,14 @@ func _run() -> void:
 	if not tasks.text.contains("Points: 40"):
 		_fail("Completed sample missions did not award configured points")
 		return
+	var market: Node3D = spots.get_node("MarketSnack")
+	if not market.get_node("SnackLabel").text.contains("7 left") or not market.get_node("Display/Snack").visible:
+		_fail("A validated snack use did not reduce visible shared stock")
+		return
+	market.SetUseCount(8)
+	if market.get_node("Display/Snack").visible or not market.get_node("SnackLabel").text.contains("0 left"):
+		_fail("Depleted snack stock did not update its visible state")
+		return
 
 	print("M03 mission smoke passed: three reachable, prompted, completed infractions.")
 	quit(0)

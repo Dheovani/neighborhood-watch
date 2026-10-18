@@ -63,7 +63,28 @@ try
     Check(partialAssignment.CompletedCount == 0 && partialAssignment.CompletionPoints == 0,
         "An infraction outside the assignment must not grant mission progress.");
 
-    Console.WriteLine("M03/M04 domain checks passed: catalog, abstention, validation, assignments, atomic completion, and duplicates.");
+    MissionSession eventDriven = new("player-three", catalog);
+    InfractionEvent validated = new(99, "player-three", string.Empty, mission.InfractionCategory,
+        mission.LocationId, mission.OffenseActions[0], 45);
+    CheckStatus(eventDriven.ConsumeValidatedInfraction(validated with { ActorId = "another-player" }), MissionActionStatus.WrongActor);
+    CheckStatus(eventDriven.ConsumeValidatedInfraction(validated with { LocationId = "another-place" }), MissionActionStatus.UnknownMission);
+    CheckStatus(eventDriven.ConsumeValidatedInfraction(validated with { ActionId = "do_nothing" }), MissionActionStatus.UnknownMission);
+    CheckStatus(eventDriven.ConsumeValidatedInfraction(validated with { Category = "sabotage" }), MissionActionStatus.UnknownMission);
+    CheckStatus(eventDriven.ConsumeValidatedInfraction(validated with { MissionId = "neighbor_mail" }), MissionActionStatus.UnknownMission);
+    Check(eventDriven.CompletedCount == 0 && eventDriven.Events.Count == 0,
+        "Unmatched validated events must not change mission progress.");
+    MissionAttempt applied = eventDriven.ConsumeValidatedInfraction(validated);
+    Check(applied.Status == MissionActionStatus.Completed && applied.MissionId == mission.Id &&
+        ReferenceEquals(applied.Event, validated) && ReferenceEquals(eventDriven.Events[0], validated),
+        "Mission progress must consume the authoritative event rather than create a second event.");
+    CheckStatus(eventDriven.ConsumeValidatedInfraction(validated), MissionActionStatus.AlreadyCompleted);
+    CheckStatus(eventDriven.ConsumeValidatedInfraction(validated with { Sequence = 100 }), MissionActionStatus.AlreadyCompleted);
+    Check(eventDriven.CompletedCount == 1 && eventDriven.CompletionPoints == mission.CompletionPoints &&
+        eventDriven.Events.Count == 1,
+        "Replaying an event or repeating an action must not duplicate points or consumed events.");
+    CheckStatus(partialAssignment.ConsumeValidatedInfraction(validated with { ActorId = "player-two" }), MissionActionStatus.UnknownMission);
+
+    Console.WriteLine("M03/M04 domain checks passed: catalog, abstention, validation, assignments, authoritative event consumption, and duplicates.");
     return 0;
 }
 catch (Exception error)
