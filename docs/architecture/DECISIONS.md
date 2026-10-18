@@ -39,3 +39,19 @@ The player's 2026-10-17 clarification includes both petty crimes and rude or inc
 - Evidence scoring and observation rules.
 - Exact mode tie breakers and scoring numbers.
 - Fictional report outcomes and penalties for different infraction categories.
+
+## Confirmed by design specification v0.2
+
+1. **Shared actions can create infractions without missions.** Missions require their specific infraction and any additional conditions. M03's direct action-to-completion flow is a prototype, not the intended world interaction model.
+2. **World effects and penalties are separate.** Validated actions may immediately change the environment. Only a later voluntary report supported by sufficient server-validated proof can impose a penalty. Cameras record without reporting; traces alone do not identify an actor.
+3. **Server-owned truth is selectively replicated.** The server assigns infraction IDs and retains hidden facts. Rendering visibility does not itself create evidence. Previously recorded evidence survives a power cut.
+4. **Consequence levels are provisional.** Incivility, intrusion, and sabotage establish an initial order. Amounts, durations, and evidence thresholds require playtesting.
+
+See `docs/design/MISSIONS_AND_INFRACTIONS.md` for the twelve initial mission concepts and M04/M05 contract. "Host" in that document means the planned authoritative Godot server, not peer authority.
+
+## Accepted for the first M04 slice
+
+1. **ENet plus CLI launch arguments.** `--server`, `--connect=<address>`, and `--port=<number>` provide repeatable local sessions without adding accounts, discovery services, or a launcher.
+2. **Server-simulated movement from client input.** Clients submit axes, jump, and look yaw. The server uses the existing character movement code; local clients use confirmed positions without prediction, while remote avatars interpolate. Latency testing is still required.
+3. **Server-side mission validation and a match infraction journal.** The server resolves the RPC sender, target, range, and line of sight. It owns each mission session and records one infraction for each successful use of a sample spot. One-time spots can be used without an assigned mission. A replicated use count and park paper provide minimal shared world state; more general and gameplay-relevant interactions remain pending.
+4. **Provisional visual relevance gate.** Remote positions are sent only within 40 m and with an unobstructed scene ray. This is a disclosure limit for the prototype, not the observation or evidence model for M05.

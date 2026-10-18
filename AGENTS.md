@@ -13,6 +13,7 @@
 - The neighborhood has houses and gardens alongside a few shops, a gas station, and a park. Do not visually associate low income with the game's rule-breaking behavior. Reportable in-game infractions include petty crimes and noncriminal incivilities; do not assume that every infraction is a real-world crime. Preserve a silly, friendly tone and exclude grave wrongdoing and severe violence.
 - Add abstractions and dependencies only for concrete needs. Do not add a database, web backend, authentication service, or editor plugin without approval.
 - Update documentation when a decision becomes confirmed, changes, or is implemented. Mark speculative mechanics as proposed or unresolved.
+- Write all project documentation in English, including design documents, roadmap updates, and agent instructions. User-facing conversation may remain in Portuguese.
 
 ## Output for this project
 

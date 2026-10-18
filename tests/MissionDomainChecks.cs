@@ -57,7 +57,13 @@ try
     }
     Check(duplicateRejected, "Duplicate mission IDs must be rejected when loading a catalog.");
 
-    Console.WriteLine("M03 domain checks passed: catalog, abstention, validation, atomic completion, and duplicates.");
+    MissionSession partialAssignment = new("player-two", catalog.Definitions.Skip(1));
+    MissionAction unassignedAction = new("player-two", mission.Id, mission.LocationId, mission.OffenseActions[0], 44);
+    CheckStatus(partialAssignment.TryComplete(unassignedAction, validContext), MissionActionStatus.UnknownMission);
+    Check(partialAssignment.CompletedCount == 0 && partialAssignment.CompletionPoints == 0,
+        "An infraction outside the assignment must not grant mission progress.");
+
+    Console.WriteLine("M03/M04 domain checks passed: catalog, abstention, validation, assignments, atomic completion, and duplicates.");
     return 0;
 }
 catch (Exception error)

@@ -40,6 +40,8 @@ script = ExtResource("1_spot")
 MissionId = "park_litter"
 LocationId = "park_path"
 ActionId = "drop_paper"
+ActionLabel = "Drop paper on the path"
+EffectNodePath = "Paper"
 
 [node name="Paper" type="MeshInstance3D" parent="ParkLitter"]
 position = Vector3(0, 0.08, 0)
@@ -72,6 +74,7 @@ script = ExtResource("1_spot")
 MissionId = "neighbor_mail"
 LocationId = "north_house_mailbox"
 ActionId = "read_mail"
+ActionLabel = "Read your neighbor's mail"
 
 [node name="Mailbox" type="StaticBody3D" parent="NeighborMail"]
 
@@ -103,6 +106,7 @@ script = ExtResource("1_spot")
 MissionId = "market_snack"
 LocationId = "market_display"
 ActionId = "take_unpaid_snack"
+ActionLabel = "Take a snack without paying"
 
 [node name="Display" type="StaticBody3D" parent="MarketSnack"]
 

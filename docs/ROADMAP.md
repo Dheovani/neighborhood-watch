@@ -7,6 +7,7 @@ This is the working checklist, not a claim that future mechanics are final. `[x]
 - The setting is an **ordinary U.S. neighborhood** with houses and gardens plus a few commercial and public places. Do not imply that low income causes the offenses. The exact city and density remain undecided.
 - Every player can commit minor reportable infractions, observe others, gather evidence, and report. In-game infractions include petty crimes and rude or inconsiderate acts, regardless of whether they are crimes in real life. There are no fixed innocent, criminal, or detective roles.
 - **Completing a mission requires its infraction.** Choosing not to do it leaves the mission incomplete and earns no completion points. Do not create a responsible alternate completion route.
+- Missions define the required result, not one fixed method. Reusable interactions can create infractions without an active mission. A penalty requires a voluntary report backed by sufficient server-validated evidence; no infraction is automatically punished.
 - Preserve a silly, friendly tone; exclude killing, severe violence, violent robbery, corruption, and comparable grave wrongdoing from missions.
 - Match progress, Score Attack score, match currency, and reporting credibility are distinct concepts. The exact role of credibility remains to be designed.
 - M04 onward: the dedicated server decides authoritative gameplay outcomes. Client screenshots and video are not authoritative evidence.
@@ -85,7 +86,7 @@ Estimates below are planning ranges for one developer working roughly six focuse
 
 ## M03 — Missions and offense events
 
-**State:** Approved by the player to begin on 2026-10-17; playable offline prototype implemented. Sample mission content and visible playtest remain open, so M03 is not yet complete. **Original estimate:** 5–8 development days.
+**State:** Playable offline prototype merged into `master`. The player confirmed all three interactions work on 2026-10-17. The v0.2 catalog changes future content requirements; M03's simple samples remain prototype content. **Original estimate:** 5–8 development days.
 
 ### Set the rule boundary
 
@@ -120,45 +121,50 @@ Estimates below are planning ranges for one developer working roughly six focuse
 - [x] Verify no sample mission grants completion without its required infraction.
 - [x] Record mission data format and the event contract needed by M04 and M05.
 - [x] Run the full build and Godot import/startup checks.
-- [ ] Play the three mission interactions visibly and review the prompt, prop placement, and exact sample content with the player.
+- [x] Play all three mission interactions visibly and confirm their basic operation with the player.
+- [ ] Review their final content and prop placement against the v0.2 mission catalog.
 
 **Acceptance:** At least three approved minor-infraction missions can be assigned and completed in the prototype map. The samples may include a petty crime or an inconsiderate act. Completion, reward eligibility, and infraction event creation agree; abstention yields none of them. Evidence, reports, and multiplayer remain out of scope.
 
 ## M04 — Authoritative multiplayer foundation
 
-**State:** Planned; requires M03 approval and completion. **Estimate:** 8–12 development days.
+**State:** Approved to begin by the player on 2026-10-17. An initial authoritative network slice is implemented; M04 remains in progress. **Original estimate:** 8–12 development days.
 
 ### Decide authority and session behavior
 
 - [ ] Document client intents, server-owned state, replicated state, and rejection reasons for each M03 interaction.
+- [ ] Select a small set of shared world actions that can create infractions without a mission, then make mission progress consume those validated events as specified in `docs/design/MISSIONS_AND_INFRACTIONS.md`.
+- [x] Demonstrate one unassigned park action that records an infraction without advancing mission progress.
 - [ ] Decide a movement synchronization method after a local latency test; document any prediction or interpolation added.
-- [ ] Set a development-only connection flow using Godot high-level multiplayer, ENet, and a headless server.
-- [ ] Set clear match capacity and connection/disconnection behavior for the initial 4–8 player target.
+- [x] Set a development-only connection flow using Godot high-level multiplayer, ENet, and a headless server.
+- [x] Set an initial capacity of eight clients and remove disconnected player scenes and session state.
 
 ### Implement the session
 
-- [ ] Add a dedicated server launch command that works without a graphical window.
+- [x] Add a dedicated server launch command that works without a graphical window.
 - [ ] Add minimal host, join, and connection status UI for local development.
-- [ ] Assign and validate one peer identity per connected player on the server.
-- [ ] Spawn one player scene per connected peer and remove it after disconnect.
-- [ ] Move authoritative player positions and essential motion state to the server.
-- [ ] Replicate other players' positions with smoothing suitable for observation gameplay.
-- [ ] Prevent a client from directly changing another player's character or camera.
-- [ ] Keep each client's camera and local presentation separate from server gameplay state.
-- [ ] Move mission assignment, completion, and offense event ownership to server-side match state.
-- [ ] Accept interaction requests as intents and validate player, target, distance, context, and repeat use on the server.
-- [ ] Send only confirmed outcomes back to clients and keep UI consistent after a rejected request.
-- [ ] Handle a disconnected player without leaving interactables locked or breaking the match.
+- [x] Assign and validate one peer identity per connected player on the server.
+- [x] Spawn one player scene per connected peer and remove it after disconnect.
+- [x] Move authoritative player positions and essential motion state to the server.
+- [x] Replicate other players' positions with basic interpolation and provisional line-of-sight gating; evaluate quality under latency before acceptance.
+- [x] Prevent a client from directly changing another player's character or camera through network messages.
+- [x] Keep each client's camera and local presentation separate from server gameplay state.
+- [x] Move mission assignment, completion, and infraction event ownership to server-side match state for the M03 sample actions.
+- [x] Accept sample interaction requests as intents and validate sender, target, distance, line of sight, and repeat use on the server.
+- [x] Send confirmed sample outcomes back to the requesting client and keep progress unchanged after rejection.
+- [x] Remove a disconnected player's scene and session without leaving the server in an invalid state.
+- [ ] Apply and replicate durable shared world effects from validated actions, including actions performed without a mission.
+- [x] Replicate a placeholder park paper state and spot use count after validated actions, including an unassigned action.
 
 ### Validate and document
 
-- [ ] Run one headless server and at least two local clients from repeatable CLI commands.
+- [x] Run one headless server and two local clients from a repeatable local script and CI job.
 - [ ] Verify both clients see each other move and can complete their own assigned missions.
-- [ ] Verify a forged completion request or invalid target cannot award progress or create an offense event.
+- [x] Verify distant and unknown-target requests cannot award progress or create an infraction event.
 - [ ] Test join, leave, reconnect, and server shutdown behavior.
 - [ ] Test playability under a documented simulated latency and packet-loss setting.
 - [ ] Record the chosen synchronization method, known latency limits, and message ownership rules.
-- [ ] Run automated rule tests and scene startup checks after networking changes.
+- [x] Run automated rule tests, scene startup checks, and a two-client network smoke test after networking changes.
 
 **Acceptance:** The headless server owns and validates player, mission, and offense state. Multiple clients share one match without trusting a client's claim of completion. Accounts, matchmaking, and external services remain out of scope.
 
@@ -189,9 +195,9 @@ Estimates below are planning ranges for one developer working roughly six focuse
 
 ### Implement reporting
 
-- [ ] Provide a report flow that allows a named target and optional evidence selection.
+- [ ] Provide a report flow that requires a named target and sufficient evidence for a valid accusation.
 - [ ] Resolve reports on the server and return a clear result to reporter and accused.
-- [ ] Ensure a report without evidence cannot by itself establish guilt or impose a significant penalty.
+- [ ] Reject a report without sufficient evidence; never apply a penalty or grant a bare-accusation reward.
 - [ ] Reward useful evidence according to a configurable policy rather than a UI-side formula.
 - [ ] Apply one reversible, limited penalty type first and ensure it does not undo completed missions.
 - [ ] Enforce cooldowns or per-offense limits and reject self-reports and duplicate farming attempts.
@@ -200,7 +206,7 @@ Estimates below are planning ranges for one developer working roughly six focuse
 ### Validate and document
 
 - [ ] Test witnessed, blocked, distant, expired, mistaken-identity, and fabricated evidence scenarios.
-- [ ] Test reports with no evidence, weak evidence, strong evidence, and repeated submissions.
+- [ ] Test rejection of reports without sufficient evidence, evaluation of weak and strong evidence, and repeated submissions.
 - [ ] Run a multi-client scenario where one player offends and another submits a valid report.
 - [ ] Confirm penalties are temporary and do not remove player control for excessive periods.
 - [ ] Record evidence rules, report outcomes, tuning values, and unresolved balance questions.

@@ -5,7 +5,7 @@ using NeighborhoodWatch.Ui;
 
 namespace NeighborhoodWatch.Gameplay.Missions;
 
-/// <summary>Offline M03 adapter. M04 will move action validation and session ownership to the server.</summary>
+/// <summary>Offline mission adapter; network sessions use server-owned validation and state.</summary>
 public partial class LocalMissionController : Node
 {
     private const string LocalActorId = "local-player";
@@ -84,6 +84,7 @@ public partial class LocalMissionController : Node
 
         if (result.Succeeded)
         {
+            spot.SetUseCount(1);
             _hud.Render(_session);
             _hud.SetFeedback($"Mission complete: {_session.Assigned.First(mission => mission.Id == spot.MissionId).Title}");
             GD.Print($"Infraction #{result.Event!.Sequence}: {result.Event.Category} at {result.Event.LocationId}");
