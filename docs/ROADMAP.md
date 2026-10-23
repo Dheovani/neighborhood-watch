@@ -166,8 +166,9 @@ Estimates below are planning ranges for one developer working roughly six focuse
 - [x] Test client recovery after dedicated server shutdown.
 - [x] Smoke-test menu hosting, joining, leaving, and recovery after a connection attempt times out.
 - [x] Visually confirm the local Host button starts a playable session.
-- [ ] Test playability under a documented simulated latency and packet-loss setting.
-- [ ] Record the chosen synchronization method, known latency limits, and message ownership rules.
+- [x] Verify two-client movement and mission outcomes through a UDP relay with nominal 150 ms round trip and 2% deterministic packet loss.
+- [ ] Visually judge movement and interaction responsiveness under the same simulated network conditions.
+- [ ] Decide whether local prediction and reconciliation are needed after the visual latency review; record the acceptable latency range.
 - [x] Run automated rule tests, scene startup checks, and a two-client network smoke test after networking changes.
 - [ ] At the M04 acceptance review, decide whether to purchase the neighborhood mesh pack; if purchased, test a small Godot 4.7.2 import before building M05 visibility rules against final geometry.
 

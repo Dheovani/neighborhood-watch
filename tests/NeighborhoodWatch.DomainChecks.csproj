@@ -4,8 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MissionDomainChecks.cs" />
     <Compile Include="../scripts/gameplay/missions/Domain/*.cs" Link="Domain/%(Filename)%(Extension)" />
     <None Include="../resources/missions/initial.json" Link="initial.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

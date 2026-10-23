@@ -22,9 +22,11 @@ From PowerShell in the project root:
 ```powershell
 .\scripts\dev\validate.ps1
 .\scripts\dev\validate.ps1 -Play
+.\scripts\dev\latency-smoke.ps1
+.\scripts\dev\play-latency.ps1
 ```
 
-The first command validates; the second repeats validation and opens the game for a visual playtest. An explicit `-GodotPath` takes priority; otherwise the script checks `tools/godot/`, `GODOT_EXE`, its temporary cache, PATH, and the named Downloads ZIP. It restores packages from Godot's bundled NuGet feed when available, builds C#, runs dependency-free .NET mission rule checks, imports scenes, launches the main scene headlessly, and checks movement, neighborhood routes, missions, and one server with two network clients. To build only, run `dotnet build NeighborhoodWatch.csproj`. On first restore without the bundled packages, NuGet network access may be needed.
+The first command validates; the second repeats validation and opens the game for a visual playtest. The third runs a separate two-client network check through a local UDP conditioner with 75 ms delay in each direction and deterministic 1-in-50 packet loss per direction. It checks that movement, missions, and shared state still function, but cannot judge how responsive controls feel. The fourth launches two visible client windows with the same network conditions for that review; close both windows to stop its server and relays. For `validate.ps1`, an explicit `-GodotPath` takes priority; otherwise it checks `tools/godot/`, `GODOT_EXE`, its temporary cache, PATH, and the named Downloads ZIP. The latency scripts accept `-GodotPath` or use `tools/godot/` or `GODOT_EXE`. Validation restores packages from Godot's bundled NuGet feed when available, builds C#, runs dependency-free .NET mission rule checks, imports scenes, launches the main scene headlessly, and checks movement, neighborhood routes, missions, and one server with two network clients. To build only, run `dotnet build NeighborhoodWatch.csproj`. On first restore without the bundled packages, NuGet network access may be needed.
 
 The game now opens a small connection menu by default. Choose **Play offline**, **Host locally**, or **Join server**. A local host starts a separate headless Godot server and joins it automatically. A second game window can join at `127.0.0.1` on UDP port `24567`. Press **Tab** to reopen the menu and leave a session. A failed connection returns to the menu after a five-second timeout. The address and port fields are development controls, not a matchmaking service.
 
@@ -42,7 +44,7 @@ Open this folder in VS Code. Edit C# and text scene files there; Godot's editor 
 
 ## GitHub automation
 
-Pull requests targeting `master` run two workflows. **CI** verifies C# formatting, builds with warnings as errors, runs mission rule checks, then imports and launches the project in headless Godot 4.7.2 .NET and runs movement, neighborhood, mission, and two-client network smoke tests. **Security** audits the game and domain-check projects for known NuGet vulnerabilities of moderate severity or higher. Public repositories also run C# CodeQL; GitHub requires an eligible Code Security plan for private repositories, so that job is skipped there. The Godot download is pinned to the official 4.7.2 release and checked against its SHA-256 digest.
+Pull requests targeting `master` run two workflows. **CI** verifies C# formatting, builds with warnings as errors, runs mission rule checks, then imports and launches the project in headless Godot 4.7.2 .NET and runs movement, neighborhood, mission, normal two-client network, and conditioned network smoke tests. **Security** audits all three .NET projects for known NuGet vulnerabilities of moderate severity or higher. Public repositories also run C# CodeQL; GitHub requires an eligible Code Security plan for private repositories, so that job is skipped there. The Godot download is pinned to the official 4.7.2 release and checked against its SHA-256 digest.
 
 Dependabot checks GitHub Actions and NuGet weekly. `Godot.NET.Sdk` updates are excluded because the SDK and installed Godot editor must be upgraded together and validated locally. GitHub issue forms and the pull request template live in `.github/`. Recommended branch protection checks are **Code quality**, **Game smoke**, and **NuGet audit**; do not require **CodeQL C#** while the repository is private. CI on GitHub starts only after this branch is committed and pushed. The local Windows equivalent remains `./scripts/dev/validate.ps1`.
 
@@ -72,6 +74,7 @@ The scene has a capsule player, ground collision, lighting, a following camera, 
 - `scripts/gameplay/missions/LocalMissionController.cs`: offline scene adapter for interaction range, sightline, and UI.
 - `scripts/networking/NetworkSession.cs`: development ENet session with server-owned movement, mission validation, and infraction records.
 - `tests/`: .NET rule checks and Godot scene smoke checks.
+- `tests/NetworkConditions/`: dependency-free UDP relay for repeatable M04 latency checks.
 - `docs/design/MISSIONS_AND_INFRACTIONS.md`: confirmed v0.2 mission, evidence, and consequence rules with provisional values.
 - `scripts/dev/validate.ps1`: repeatable local CLI validation.
 - `docs/design/GDD.md`: confirmed game concept and proposed mechanics.
@@ -82,4 +85,4 @@ The scene has a capsule player, ground collision, lighting, a following camera, 
 
 ## Current limits
 
-The network slice offers a development connection menu and immediate exterior interactions. Local hosting was confirmed in a visible playtest on 2026-10-18. The server records validated infractions independently of mission assignments, then grants mission progress by consuming matching events. Park litter persists, and the market has eight shared snack uses that can be depleted by any player. There is no prediction, general inventory, multi-step action system, matchmaking lobby, evidence, reports, or match results. Remote movement is interpolated; local movement can feel rough under latency. The visual relevance gate is provisional and does not count as evidence. Mission points are prototype completion rewards, not final Score Attack scoring. M04 still requires a visible multi-client playtest and simulated latency tests.
+The network slice offers a development connection menu and immediate exterior interactions. Local hosting was confirmed in a visible playtest on 2026-10-18. The server records validated infractions independently of mission assignments, then grants mission progress by consuming matching events. Park litter persists, and the market has eight shared snack uses that can be depleted by any player. There is no prediction, general inventory, multi-step action system, matchmaking lobby, evidence, reports, or match results. Remote movement is interpolated; local movement can feel rough under latency. The visual relevance gate is provisional and does not count as evidence. Mission points are prototype completion rewards, not final Score Attack scoring. A headless 150 ms nominal RTT and 2% packet-loss check passed on 2026-10-19; M04 still needs a visible multi-client playtest and a human assessment of latency playability.

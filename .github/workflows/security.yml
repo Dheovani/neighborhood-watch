@@ -26,6 +26,7 @@ jobs:
         run: |
           dotnet restore NeighborhoodWatch.csproj -p:NuGetAudit=true -p:NuGetAuditLevel=moderate -warnaserror
           dotnet restore tests/NeighborhoodWatch.DomainChecks.csproj -p:NuGetAudit=true -p:NuGetAuditLevel=moderate -warnaserror
+          dotnet restore tests/NetworkConditions/NetworkConditions.csproj -p:NuGetAudit=true -p:NuGetAuditLevel=moderate -warnaserror
 
   codeql:
     name: CodeQL C#
