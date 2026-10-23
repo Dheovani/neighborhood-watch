@@ -28,14 +28,17 @@ jobs:
         run: |
           dotnet restore NeighborhoodWatch.csproj
           dotnet restore tests/NeighborhoodWatch.DomainChecks.csproj
+          dotnet restore tests/NetworkConditions/NetworkConditions.csproj
       - name: Verify C# formatting
         run: |
           dotnet format NeighborhoodWatch.csproj --verify-no-changes --no-restore --verbosity minimal
           dotnet format tests/NeighborhoodWatch.DomainChecks.csproj --verify-no-changes --no-restore --verbosity minimal
+          dotnet format tests/NetworkConditions/NetworkConditions.csproj --verify-no-changes --no-restore --verbosity minimal
       - name: Build with warnings as errors
         run: |
           dotnet build NeighborhoodWatch.csproj --configuration Release --no-restore --warnaserror
           dotnet build tests/NeighborhoodWatch.DomainChecks.csproj --configuration Release --no-restore --warnaserror
+          dotnet build tests/NetworkConditions/NetworkConditions.csproj --configuration Release --no-restore --warnaserror
       - name: Test mission domain rules
         run: dotnet run --project tests/NeighborhoodWatch.DomainChecks.csproj --configuration Release --no-build
 
@@ -137,3 +140,47 @@ jobs:
           wait "$shutdown_client"
           test ! -s "$logs/ui-shutdown.err"
           grep -q 'M04 server shutdown recovery passed' "$logs/ui-shutdown.out"
+      - name: Test network under delay and loss
+        shell: bash
+        run: |
+          set -euo pipefail
+          logs="$RUNNER_TEMP/latency-smoke"
+          mkdir -p "$logs"
+          dotnet build tests/NetworkConditions/NetworkConditions.csproj --configuration Release --warnaserror
+          proxy="$GITHUB_WORKSPACE/tests/NetworkConditions/bin/Release/net8.0/NetworkConditions.dll"
+          "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" -- --server --port=24572 >"$logs/server.out" 2>"$logs/server.err" &
+          server=$!
+          trap 'kill "$server" "${actor_proxy:-}" "${observer_proxy:-}" 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in {1..50}; do
+            if grep -q 'Network server ready' "$logs/server.out"; then ready=1; break; fi
+            sleep 0.1
+          done
+          test "$ready" -eq 1
+          dotnet "$proxy" 24573 24572 75 50 >"$logs/actor-proxy.out" 2>"$logs/actor-proxy.err" &
+          actor_proxy=$!
+          dotnet "$proxy" 24574 24572 75 50 >"$logs/observer-proxy.out" 2>"$logs/observer-proxy.err" &
+          observer_proxy=$!
+          for attempt in {1..50}; do
+            if grep -q 'Network conditioner ready' "$logs/actor-proxy.out" && grep -q 'Network conditioner ready' "$logs/observer-proxy.out"; then break; fi
+            sleep 0.1
+          done
+          grep -q 'Network conditioner ready' "$logs/actor-proxy.out"
+          grep -q 'Network conditioner ready' "$logs/observer-proxy.out"
+          timeout 35s "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/network_client_smoke.gd -- --connect=127.0.0.1 --port=24573 --smoke-role=actor >"$logs/actor.out" 2>"$logs/actor.err" &
+          actor=$!
+          joined=0
+          for attempt in {1..50}; do
+            if grep -q 'Server spawned peer' "$logs/server.out"; then joined=1; break; fi
+            sleep 0.1
+          done
+          test "$joined" -eq 1
+          timeout 35s "$GODOT_EXE" --headless --path "$GITHUB_WORKSPACE" --script res://tests/network_client_smoke.gd -- --connect=127.0.0.1 --port=24574 --smoke-role=observer >"$logs/observer.out" 2>"$logs/observer.err" &
+          observer=$!
+          wait "$actor"
+          wait "$observer"
+          for name in server actor-proxy observer-proxy actor observer; do test ! -s "$logs/$name.err"; done
+          grep -q 'Server infraction #3' "$logs/server.out"
+          grep -q 'M04 actor smoke passed' "$logs/actor.out"
+          grep -q 'M04 observer smoke passed' "$logs/observer.out"
+          grep -q 'Dropped .* packet' "$logs/actor-proxy.out"
